@@ -1,9 +1,13 @@
 from app.database import get_connection
 
 def load_observation(observation):
+    """ Saves an observation to the database. """
+
+    # Connect to the database
     with get_connection() as conn:
         with conn.cursor() as cur:
 
+            # Add the station to the database
             cur.execute("""
                 INSERT INTO station (station_id, latitude, longitude)
                 VALUES (%s, %s, %s)
@@ -14,6 +18,7 @@ def load_observation(observation):
                 observation["longitude"]
             ))
 
+            # Add the measurement to the database
             cur.execute("""
                 INSERT INTO measurement (
                     station_id,

@@ -2,6 +2,9 @@ import os
 import psycopg
 
 def get_connection():
+    """ Connects to the PostgreSQL database. """
+
+    # Get the database settings from the environment variables
     return psycopg.connect(
         host=os.environ["POSTGRES_HOST"],
         port=os.environ["POSTGRES_PORT"],
@@ -11,8 +14,13 @@ def get_connection():
     )
 
 def create_tables():
+    """ Creates the database tables if they do not already exist. """
+
+    # Connect to the database
     with get_connection() as conn:
         with conn.cursor() as cur:
+
+            # Create the source, station and measurement tables
             cur.execute("""
                 CREATE TABLE IF NOT EXISTS source (
                     source_id SERIAL PRIMARY KEY,
@@ -37,8 +45,13 @@ def create_tables():
             """)
 
 def create_source(name):
+    """ Adds a data source to the database or return its existing ID. """
+
+    # Connect to the database
     with get_connection() as conn:
         with conn.cursor() as cur:
+
+            # Add the source if it does not already exist
             cur.execute("""
                 INSERT INTO source (name)
                 VALUES (%s)
@@ -48,9 +61,11 @@ def create_source(name):
 
             result = cur.fetchone()
 
+            # Return the new source ID
             if result:
                 return result[0]
 
+            # Find the ID if the source already exists
             cur.execute("""
                 SELECT source_id
                 FROM source
