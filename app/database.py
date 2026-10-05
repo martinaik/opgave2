@@ -39,7 +39,7 @@ def create_tables():
                     source_id INTEGER NOT NULL REFERENCES source(source_id),
                     parameter_id VARCHAR(100) NOT NULL,
                     value DOUBLE PRECISION,
-                    observed TIMESTAMP,
+                    observed TIMESTAMPTZ,
                     UNIQUE (station_id, source_id, parameter_id, observed)
                 );
             """)
