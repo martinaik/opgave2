@@ -31,7 +31,7 @@ Projektet køres ved at PostgreSQL-databasen først startes med kommandoen `dock
 ## Beskrivelse af den implementerede softwarearkitektur
 Projektet er opbygget som en ETL-pipeline, hvor data først hentes fra DMIs offentlige API, derefter transformeres det til projektets datastruktur og til sidst indlæses dataen i en PostgreSQL-database.
 
-`main.py` fungerer som programmets hovedfil og starter databaseopsætningen samt DMI-ETL processen.
+`main.py` fungerer som programmets hovedfil og starter databaseopsætningen samt ETL processen.
 
 ETL-processen er delt op i forskellige funktioner med hvert sit ansvar:
 - `extract_dmi.py` står for at hente data fra DMI's API.
