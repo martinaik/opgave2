@@ -6,6 +6,18 @@ Dette projekt har til formål at indsamle miljødata, som kan bruges til at vurd
 ## Beskrivelse af, hvordan projektet bygges, testes og køres
 Projektet er udviklet i Python og køres ved hjælp af Docker og Docker Compose. Docker sørger for, at applikationen og PostgreSQL-databasen kan køre i separate containere med de nødvendige afhængigheder.
 
+Før projektet bygges og køres, skal der oprettes en `.env`-fil i projektets root-mappe. Filen skal indeholder:
+```text
+POSTGRES_DB=postgres_db
+POSTGRES_USER=admin
+POSTGRES_PASSWORD=password
+POSTGRES_HOST=db
+POSTGRES_PORT=5432
+PGADMIN_USER_EMAIL=admin@example.com
+PGADMIN_PASSWORD=password
+```
+`POSTGRES_HOST=db` og `POSTGRES_PORT=5432` skal ikke ændres, da de bruges til forbindelsen mellem Docker-containerne. De øvrige værdier kan vælges af brugeren. Disse værdier skal bruges, når der oprettes forbindelse til databasen og pgAdmin. `.env`-filen indeholder loginoplysninger og skal derfor ikke pushes til GitHub og er inkluderet i `.gitignore`.
+
 ### Byg projektet
 Projektets Docker-image bygges med kommandoen `docker compose build app`.
 Kommandoen bygger applikationens Docker-image ud fra projektets Dockerfile og installerer de nødvendige Python-pakker.
