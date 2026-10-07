@@ -43,21 +43,4 @@ ETL-processen er delt op i forskellige funktioner med hvert sit ansvar:
 `database.py` indeholder databasefunktionerne og håndterer blandt andet oprettelse af tabeller og forbindelse til PostgreSQL.
 
 ## UML-diagram
-```mermaid
-erDiagram
-    STATION ||--o{ MEASUREMENT : has
 
-    STATION {
-        varchar station_id PK
-        float latitude
-        float longitude
-    }
-
-    MEASUREMENT {
-        varchar station_id FK
-        integer source_id
-        timestamp observed
-        float humidity
-        float pressure
-    }
-```
