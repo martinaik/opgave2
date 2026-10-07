@@ -56,14 +56,14 @@ erDiagram
 
     SOURCE {
         integer source_id PK
-        varchar name
+        varchar name UK
     }
 
     MEASUREMENT {
         integer measurement_id PK
-        varchar station_id FK
-        integer source_id FK
-        timestamp observed
+        varchar station_id FK, UK
+        integer source_id FK, UK
+        timestamp observed UK
         float temp_dry
         float temp_dew
     }
