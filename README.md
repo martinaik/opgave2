@@ -66,5 +66,54 @@ erDiagram
         timestamp observed UK
         float temp_dry
         float temp_dew
+        float temp_mean_past1h
+        float temp_max_past1h
+        float temp_min_past1h
+        float temp_max_past12h
+        float temp_min_past12h
+        float temp_grass
+        float temp_grass_max_past1h
+        float temp_grass_mean_past1h
+        float temp_grass_min_past1h
+        float temp_soil
+        float temp_soil_max_past1h
+        float temp_soil_mean_past1h
+        float temp_soil_min_past1h
+        float humidity
+        float humidity_past1h
+        float pressure
+        float pressure_at_sea
+        float wind_dir
+        float wind_dir_past1h
+        float wind_speed
+        float wind_speed_past1h
+        float wind_gust_always_past1h
+        float wind_gust_past10min
+        float wind_gust_last1h
+        float wind_gust_last3h
+        float wind_gust_last6h
+        float wind_max
+        float wind_min_past1h
+        float wind_min
+        float wind_max_per10min_past1h
+        float precip_past1h
+        float precip_past10min
+        float precip_past1min
+        float precip_past24h
+        float precip_dur_past10min
+        float precip_dur_past1h
+        float snow_depth_man
+        float snow_cover_man
+        float visibility
+        float visib_mean_last10min
+        float cloud_cover
+        float cloud_height
+        float weather
+        float radia_glob
+        float radia_glob_past1h
+        float sun_last10min_glob
+        float sun_last1h_glob
+        float leav_hum_dur_past10min
+        float leav_hum_dur_past1h
     }
 ```
