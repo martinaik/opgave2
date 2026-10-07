@@ -66,6 +66,5 @@ erDiagram
         timestamp observed
         float temp_dry
         float temp_dew
-        ...
     }
 ```
