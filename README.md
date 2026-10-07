@@ -43,4 +43,4 @@ ETL-processen er delt op i forskellige funktioner med hvert sit ansvar:
 `database.py` indeholder databasefunktionerne og håndterer blandt andet oprettelse af tabeller og forbindelse til PostgreSQL.
 
 ## UML-diagram
-
+ 
