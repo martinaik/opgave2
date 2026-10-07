@@ -61,8 +61,8 @@ erDiagram
 
     MEASUREMENT {
         integer measurement_id PK
-        varchar station_id
-        integer source_id
+        varchar station_id FK
+        integer source_id FK
         timestamp observed
         float temp_dry
         float temp_dew
