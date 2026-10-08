@@ -25,10 +25,10 @@ Projektets Docker-image bygges med kommandoen `docker compose build app`.
 Kommandoen bygger applikationens Docker-image ud fra projektets Dockerfile og installerer de nødvendige Python-pakker.
 
 ### Test projektet
-Projektet testes med enhedstest ved hjælp af pakken `pytest`. Projektets tests køres med kommandoen `docker compose run --rm app pytest`. Testene kontrollerer blandt andet, at data bliver transformeret og indlæst korrekt, samt at de forskellige dele af ETL-processen fungerer. 
+Projektet testes med enhedstest ved hjælp af pakken `pytest`. Projektets tests køres med kommandoen `docker compose run --rm app pytest`. Testene kontrollerer blandt andet, at data bliver transformeret og indlæst korrekt, samt at de forskellige dele af ETL-processen fungerer. Testenes coverage kan tjekkes med kommandoen `docker compose run --rm app pytest --cov=app --cov=etl`. 
 
 ### Kør projektet
-Projektet køres ved at PostgreSQL-databasen først startes med kommandoen `docker compose up -d db`. Derefter kan applikationen køres med `docker compose run --rm app python -m app.main`. Når programmet køres, oprettes databasetabeller, data hentes fra DMIs API, data transformeres til projektets format og indsættes i PostgreSQL-databasen.
+Projektet køres ved at PostgreSQL-databasen først startes med kommandoen `docker compose up -d db`. Derefter kan applikationen køres med `docker compose run --rm app python -m app.main`. Når programmet startes, oprettes databasetabeller, og data fra DMIs API hentes for de seneste 10 minutter. Dataene transformeres til projektets format og indsættes i PostgreSQL-databasen. Programmet fortsætter herefter med at hente nye data hvert 10. minut, så længe programmet kører.
 
 ## Beskrivelse af den implementerede softwarearkitektur
 Projektet er opbygget som en ETL-pipeline, hvor data først hentes fra DMIs offentlige API, derefter transformeres det til projektets datastruktur og til sidst indlæses dataen i en PostgreSQL-database.
@@ -42,7 +42,7 @@ ETL-processen er delt op i forskellige funktioner med hvert sit ansvar:
 
 `database.py` indeholder databasefunktionerne og håndterer blandt andet oprettelse af tabeller og forbindelse til PostgreSQL.
 
-## UML-diagram
+## ER diagram over databasestrukturen
 ```mermaid
 erDiagram
     STATION ||--o{ MEASUREMENT : has
@@ -117,3 +117,5 @@ erDiagram
         float leav_hum_dur_past1h
     }
 ```
+
+## UML-diagram
