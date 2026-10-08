@@ -39,9 +39,11 @@ ETL-processen er delt op i forskellige funktioner og filer med hvert sit ansvar:
 - `extract_dmi.py` henter data fra DMI's API.
 - `transform.py` omdanner de hentede data til et ensartet format, som kan bruges af databasen.
 - `load.py` indsætter de transformerede data i PostgreSQL-databasen.
-- `etl_dmi.py` styrer hele ETL-processen af dataen fra DMI's API.
+- `etl_dmi.py` styrer hele ETL-processen.
 
-`database.py` indeholder databasefunktionerne og håndterer blandt andet oprettelse af tabeller og forbindelse til PostgreSQL.
+`database.py` indeholder funktioner til at oprette forbindelse til PostgreSQL og til at oprette eller finde en datakilde i source-tabellen.
+
+Databasens struktur oprettes og versioneres ved hjælp af database migrations. `001_initial_scheme.sql` indeholder den første version af databasestrukturen og opretter tabellerne `source`, `station` og `measurement`. Fremtidige ændringer af databasestrukturen kan oprettes som nye migrationsfiler.
 
 ## ER diagram over databasestrukturen
 ```mermaid
