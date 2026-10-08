@@ -1,13 +1,17 @@
+# Import necessary modules
 from app.database import get_connection
 
-def load_observation(observation):
-    """ Saves an observation to the database. """
+def load_observation(observation: dict) -> None:
+    """ 
+    Loads an observation into the database. 
+    If the observation already exists, it updates the existing record.
+    """
 
     # Connect to the database
     with get_connection() as conn:
         with conn.cursor() as cur:
 
-            # Add the station to the database
+            # Insert the station into the station table
             cur.execute("""
                 INSERT INTO station (station_id, latitude, longitude)
                 VALUES (%s, %s, %s)
@@ -18,22 +22,173 @@ def load_observation(observation):
                 observation["longitude"]
             ))
 
-            # Add the measurement to the database
+            # Insert the observation into the measurement table
             cur.execute("""
-                INSERT INTO measurement (
-                    station_id,
-                    source_id,
-                    parameter_id,
-                    value,
-                    observed
+                INSERT INTO measurement (station_id, source_id, observed,
+                    temp_dry,
+                    temp_dew,
+                    temp_mean_past1h,
+                    temp_max_past1h,
+                    temp_min_past1h,
+                    temp_max_past12h,
+                    temp_min_past12h,
+                    temp_grass,
+                    temp_grass_max_past1h,
+                    temp_grass_mean_past1h,
+                    temp_grass_min_past1h,
+                    temp_soil,
+                    temp_soil_max_past1h,
+                    temp_soil_mean_past1h,
+                    temp_soil_min_past1h,
+                    humidity,
+                    humidity_past1h,
+                    pressure,
+                    pressure_at_sea,
+                    wind_dir,
+                    wind_dir_past1h,
+                    wind_speed,
+                    wind_speed_past1h,
+                    wind_gust_always_past1h,
+                    wind_gust_past10min,
+                    wind_gust_last1h,
+                    wind_gust_last3h,
+                    wind_gust_last6h,
+                    wind_max,
+                    wind_min_past1h,
+                    wind_min,
+                    wind_max_per10min_past1h,
+                    precip_past1h,
+                    precip_past10min,
+                    precip_past1min,
+                    precip_past24h,
+                    precip_dur_past10min,
+                    precip_dur_past1h,
+                    snow_depth_man,
+                    snow_cover_man,
+                    visibility,
+                    visib_mean_last10min,
+                    cloud_cover,
+                    cloud_height,
+                    weather,
+                    radia_glob,
+                    radia_glob_past1h,
+                    sun_last10min_glob,
+                    sun_last1h_glob,
+                    leav_hum_dur_past10min,
+                    leav_hum_dur_past1h
                 )
-                VALUES (%s, %s, %s, %s, %s)
-                ON CONFLICT (station_id, source_id, parameter_id, observed)
-                DO NOTHING
+                VALUES (
+                    %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s,
+                    %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, 
+                    %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+                )
+                ON CONFLICT (station_id, source_id, observed)
+                DO UPDATE SET
+                    temp_dry = COALESCE(EXCLUDED.temp_dry, measurement.temp_dry),
+                    temp_dew = COALESCE(EXCLUDED.temp_dew, measurement.temp_dew),
+                    temp_mean_past1h = COALESCE(EXCLUDED.temp_mean_past1h, measurement.temp_mean_past1h),
+                    temp_max_past1h = COALESCE(EXCLUDED.temp_max_past1h, measurement.temp_max_past1h),
+                    temp_min_past1h = COALESCE(EXCLUDED.temp_min_past1h, measurement.temp_min_past1h),
+                    temp_max_past12h = COALESCE(EXCLUDED.temp_max_past12h, measurement.temp_max_past12h),
+                    temp_min_past12h = COALESCE(EXCLUDED.temp_min_past12h, measurement.temp_min_past12h),
+                    temp_grass = COALESCE(EXCLUDED.temp_grass, measurement.temp_grass),
+                    temp_grass_max_past1h = COALESCE(EXCLUDED.temp_grass_max_past1h, measurement.temp_grass_max_past1h),
+                    temp_grass_mean_past1h = COALESCE(EXCLUDED.temp_grass_mean_past1h, measurement.temp_grass_mean_past1h),
+                    temp_grass_min_past1h = COALESCE(EXCLUDED.temp_grass_min_past1h, measurement.temp_grass_min_past1h),
+                    temp_soil = COALESCE(EXCLUDED.temp_soil, measurement.temp_soil),
+                    temp_soil_max_past1h = COALESCE(EXCLUDED.temp_soil_max_past1h, measurement.temp_soil_max_past1h),
+                    temp_soil_mean_past1h = COALESCE(EXCLUDED.temp_soil_mean_past1h, measurement.temp_soil_mean_past1h),
+                    temp_soil_min_past1h = COALESCE(EXCLUDED.temp_soil_min_past1h, measurement.temp_soil_min_past1h),
+                    humidity = COALESCE(EXCLUDED.humidity, measurement.humidity),
+                    humidity_past1h = COALESCE(EXCLUDED.humidity_past1h, measurement.humidity_past1h),
+                    pressure = COALESCE(EXCLUDED.pressure, measurement.pressure),
+                    pressure_at_sea = COALESCE(EXCLUDED.pressure_at_sea, measurement.pressure_at_sea),
+                    wind_dir = COALESCE(EXCLUDED.wind_dir, measurement.wind_dir),
+                    wind_dir_past1h = COALESCE(EXCLUDED.wind_dir_past1h, measurement.wind_dir_past1h),
+                    wind_speed = COALESCE(EXCLUDED.wind_speed, measurement.wind_speed),
+                    wind_speed_past1h = COALESCE(EXCLUDED.wind_speed_past1h, measurement.wind_speed_past1h),
+                    wind_gust_always_past1h = COALESCE(EXCLUDED.wind_gust_always_past1h, measurement.wind_gust_always_past1h),
+                    wind_gust_past10min = COALESCE(EXCLUDED.wind_gust_past10min, measurement.wind_gust_past10min),
+                    wind_gust_last1h = COALESCE(EXCLUDED.wind_gust_last1h, measurement.wind_gust_last1h),
+                    wind_gust_last3h = COALESCE(EXCLUDED.wind_gust_last3h, measurement.wind_gust_last3h),
+                    wind_gust_last6h = COALESCE(EXCLUDED.wind_gust_last6h, measurement.wind_gust_last6h),
+                    wind_max = COALESCE(EXCLUDED.wind_max, measurement.wind_max),
+                    wind_min_past1h = COALESCE(EXCLUDED.wind_min_past1h, measurement.wind_min_past1h),
+                    wind_min = COALESCE(EXCLUDED.wind_min, measurement.wind_min),
+                    wind_max_per10min_past1h = COALESCE(EXCLUDED.wind_max_per10min_past1h, measurement.wind_max_per10min_past1h),
+                    precip_past1h = COALESCE(EXCLUDED.precip_past1h, measurement.precip_past1h),
+                    precip_past10min = COALESCE(EXCLUDED.precip_past10min, measurement.precip_past10min),
+                    precip_past1min = COALESCE(EXCLUDED.precip_past1min, measurement.precip_past1min),
+                    precip_past24h = COALESCE(EXCLUDED.precip_past24h, measurement.precip_past24h),
+                    precip_dur_past10min = COALESCE(EXCLUDED.precip_dur_past10min, measurement.precip_dur_past10min),
+                    precip_dur_past1h = COALESCE(EXCLUDED.precip_dur_past1h, measurement.precip_dur_past1h),
+                    snow_depth_man = COALESCE(EXCLUDED.snow_depth_man, measurement.snow_depth_man),
+                    snow_cover_man = COALESCE(EXCLUDED.snow_cover_man, measurement.snow_cover_man),
+                    visibility = COALESCE(EXCLUDED.visibility, measurement.visibility),
+                    visib_mean_last10min = COALESCE(EXCLUDED.visib_mean_last10min, measurement.visib_mean_last10min),
+                    cloud_cover = COALESCE(EXCLUDED.cloud_cover, measurement.cloud_cover),
+                    cloud_height = COALESCE(EXCLUDED.cloud_height, measurement.cloud_height),
+                    weather = COALESCE(EXCLUDED.weather, measurement.weather),
+                    radia_glob = COALESCE(EXCLUDED.radia_glob, measurement.radia_glob),
+                    radia_glob_past1h = COALESCE(EXCLUDED.radia_glob_past1h, measurement.radia_glob_past1h),
+                    sun_last10min_glob = COALESCE(EXCLUDED.sun_last10min_glob, measurement.sun_last10min_glob),
+                    sun_last1h_glob = COALESCE(EXCLUDED.sun_last1h_glob, measurement.sun_last1h_glob),
+                    leav_hum_dur_past10min = COALESCE(EXCLUDED.leav_hum_dur_past10min, measurement.leav_hum_dur_past10min),
+                    leav_hum_dur_past1h = COALESCE(EXCLUDED.leav_hum_dur_past1h, measurement.leav_hum_dur_past1h)
             """, (
                 observation["station_id"],
                 observation["source_id"],
-                observation["parameter_id"],
-                observation["value"],
-                observation["observed"]
+                observation["observed"],
+
+                observation.get("temp_dry"),
+                observation.get("temp_dew"),
+                observation.get("temp_mean_past1h"),
+                observation.get("temp_max_past1h"),
+                observation.get("temp_min_past1h"),
+                observation.get("temp_max_past12h"),
+                observation.get("temp_min_past12h"),
+                observation.get("temp_grass"),
+                observation.get("temp_grass_max_past1h"),
+                observation.get("temp_grass_mean_past1h"),
+                observation.get("temp_grass_min_past1h"),
+                observation.get("temp_soil"),
+                observation.get("temp_soil_max_past1h"),
+                observation.get("temp_soil_mean_past1h"),
+                observation.get("temp_soil_min_past1h"),
+                observation.get("humidity"),
+                observation.get("humidity_past1h"),
+                observation.get("pressure"),
+                observation.get("pressure_at_sea"),
+                observation.get("wind_dir"),
+                observation.get("wind_dir_past1h"),
+                observation.get("wind_speed"),
+                observation.get("wind_speed_past1h"),
+                observation.get("wind_gust_always_past1h"),
+                observation.get("wind_gust_past10min"),
+                observation.get("wind_gust_last1h"),
+                observation.get("wind_gust_last3h"),
+                observation.get("wind_gust_last6h"),
+                observation.get("wind_max"),
+                observation.get("wind_min_past1h"),
+                observation.get("wind_min"),
+                observation.get("wind_max_per10min_past1h"),
+                observation.get("precip_past1h"),
+                observation.get("precip_past10min"),
+                observation.get("precip_past1min"),
+                observation.get("precip_past24h"),
+                observation.get("precip_dur_past10min"),
+                observation.get("precip_dur_past1h"),
+                observation.get("snow_depth_man"),
+                observation.get("snow_cover_man"),
+                observation.get("visibility"),
+                observation.get("visib_mean_last10min"),
+                observation.get("cloud_cover"),
+                observation.get("cloud_height"),
+                observation.get("weather"),
+                observation.get("radia_glob"),
+                observation.get("radia_glob_past1h"),
+                observation.get("sun_last10min_glob"),
+                observation.get("sun_last1h_glob"),
+                observation.get("leav_hum_dur_past10min"),
+                observation.get("leav_hum_dur_past1h")
             ))

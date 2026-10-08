@@ -1,15 +1,18 @@
+# Import necessary modules
 from unittest.mock import MagicMock, patch
 from etl.load import load_observation
 
-def test_load_observation():
+def test_load_observation() -> None:
+    """ Tests loading an observation into the database. """
+    
     observation = {
         "station_id": "06110",
         "latitude": 55.7,
         "longitude": 9.5,
         "source_id": 1,
-        "parameter_id": "temp_dry",
-        "value": 12.5,
-        "observed": "2026-10-02T08:10:00Z"
+        "observed": "2026-10-02T08:10:00Z",
+        "temp_dry": 12.5,
+        "humidity": 75.0
     }
 
     mock_cursor = MagicMock()

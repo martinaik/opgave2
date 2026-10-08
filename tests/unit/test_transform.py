@@ -1,24 +1,43 @@
-from etl.transform import transform_observation
+# Import necessary modules
+from etl.transform import transform_observations
 
-def test_transform_observation():
-    feature = {
-        "properties": {
-            "stationId": "06110",
-            "parameterId": "temp_dry",
-            "value": 12.5,
-            "observed": "2026-10-02T08:10:00Z"
+def test_transform_observations() -> None:
+    """ Tests transforming observations. """
+    
+    features = [
+        {
+            "properties": {
+                "stationId": "06110",
+                "parameterId": "temp_dry",
+                "value": 12.5,
+                "observed": "2026-10-02T08:10:00Z"
+            },
+            "geometry": {
+                "coordinates": [9.5, 55.7]
+            }
         },
-        "geometry": {
-            "coordinates": [9.5, 55.7]
+        {
+            "properties": {
+                "stationId": "06110",
+                "parameterId": "humidity",
+                "value": 75.0,
+                "observed": "2026-10-02T08:10:00Z"
+            },
+            "geometry": {
+                "coordinates": [9.5, 55.7]
+            }
         }
-    }
+    ]
 
-    result = transform_observation(feature, 1)
+    result = transform_observations(features, 1)
 
-    assert result["station_id"] == "06110"
-    assert result["latitude"] == 55.7
-    assert result["longitude"] == 9.5
-    assert result["source_id"] == 1
-    assert result["parameter_id"] == "temp_dry"
-    assert result["value"] == 12.5
-    assert result["observed"] == "2026-10-02T08:10:00Z"
+    assert len(result) == 1
+
+    assert result[0]["station_id"] == "06110"
+    assert result[0]["latitude"] == 55.7
+    assert result[0]["longitude"] == 9.5
+    assert result[0]["source_id"] == 1
+    assert result[0]["observed"] == "2026-10-02T08:10:00Z"
+
+    assert result[0]["temp_dry"] == 12.5
+    assert result[0]["humidity"] == 75.0

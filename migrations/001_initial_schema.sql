@@ -1,0 +1,71 @@
+CREATE TABLE IF NOT EXISTS source (
+    source_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS station (
+    station_id VARCHAR(20) PRIMARY KEY,
+    latitude DOUBLE PRECISION,
+    longitude DOUBLE PRECISION
+);
+
+CREATE TABLE IF NOT EXISTS measurement (
+    measurement_id SERIAL PRIMARY KEY,
+    station_id VARCHAR(20) NOT NULL REFERENCES station(station_id),
+    source_id INTEGER NOT NULL REFERENCES source(source_id),
+    observed TIMESTAMPTZ,
+
+    temp_dry DOUBLE PRECISION,
+    temp_dew DOUBLE PRECISION,
+    temp_mean_past1h DOUBLE PRECISION,
+    temp_max_past1h DOUBLE PRECISION,
+    temp_min_past1h DOUBLE PRECISION,
+    temp_max_past12h DOUBLE PRECISION,
+    temp_min_past12h DOUBLE PRECISION,
+    temp_grass DOUBLE PRECISION,
+    temp_grass_max_past1h DOUBLE PRECISION,
+    temp_grass_mean_past1h DOUBLE PRECISION,
+    temp_grass_min_past1h DOUBLE PRECISION,
+    temp_soil DOUBLE PRECISION,
+    temp_soil_max_past1h DOUBLE PRECISION,
+    temp_soil_mean_past1h DOUBLE PRECISION,
+    temp_soil_min_past1h DOUBLE PRECISION,
+    humidity DOUBLE PRECISION,
+    humidity_past1h DOUBLE PRECISION,
+    pressure DOUBLE PRECISION,
+    pressure_at_sea DOUBLE PRECISION,
+    wind_dir DOUBLE PRECISION,
+    wind_dir_past1h DOUBLE PRECISION,
+    wind_speed DOUBLE PRECISION,
+    wind_speed_past1h DOUBLE PRECISION,
+    wind_gust_always_past1h DOUBLE PRECISION,
+    wind_gust_past10min DOUBLE PRECISION,
+    wind_gust_last1h DOUBLE PRECISION,
+    wind_gust_last3h DOUBLE PRECISION,
+    wind_gust_last6h DOUBLE PRECISION,
+    wind_max DOUBLE PRECISION,
+    wind_min_past1h DOUBLE PRECISION,
+    wind_min DOUBLE PRECISION,
+    wind_max_per10min_past1h DOUBLE PRECISION,
+    precip_past1h DOUBLE PRECISION,
+    precip_past10min DOUBLE PRECISION,
+    precip_past1min DOUBLE PRECISION,
+    precip_past24h DOUBLE PRECISION,
+    precip_dur_past10min DOUBLE PRECISION,
+    precip_dur_past1h DOUBLE PRECISION,
+    snow_depth_man DOUBLE PRECISION,
+    snow_cover_man DOUBLE PRECISION,
+    visibility DOUBLE PRECISION,
+    visib_mean_last10min DOUBLE PRECISION,
+    cloud_cover DOUBLE PRECISION,
+    cloud_height DOUBLE PRECISION,
+    weather DOUBLE PRECISION,
+    radia_glob DOUBLE PRECISION,
+    radia_glob_past1h DOUBLE PRECISION,
+    sun_last10min_glob DOUBLE PRECISION,
+    sun_last1h_glob DOUBLE PRECISION,
+    leav_hum_dur_past10min DOUBLE PRECISION,
+    leav_hum_dur_past1h DOUBLE PRECISION,
+
+    UNIQUE (station_id, source_id, observed)
+);

@@ -1,14 +1,23 @@
-from app.database import create_tables
-from etl.extract_dmi import run_dmi_etl
+# Import necessary modules
+import time
+from etl.etl_dmi import run_dmi_etl
 
-def main():
-    """ Sets up the database and runs the ETL process. """
+# Time between DMI requests in seconds
+INTERVAL = 600 # 10 minutes
 
-    # Create the database tables
-    create_tables()
+def main() -> None:
+    """
+    Main function to run the application.
+    This function sets up the database and runs the ETL process in a loop.
+    """
 
     # Run the DMI ETL process
-    run_dmi_etl()
+    while True:
+        print("Running DMI ETL...")
+        run_dmi_etl()
+        print("DMI ETL completed. Waiting 10 minutes...")
+
+        time.sleep(INTERVAL)
 
 # Start the program
 if __name__ == "__main__":

@@ -1,11 +1,21 @@
+# Import necessary modules
 from unittest.mock import patch
 from app.main import main
 
-def test_main():
-    with patch("app.main.create_tables") as mock_create_tables, \
-         patch("app.main.run_dmi_etl") as mock_run_dmi_etl:
+def test_main() -> None:
+    """ Tests the main function. """
 
-        main()
+    with patch(
+        "app.main.run_dmi_etl"
+    ) as mock_run_dmi_etl, \
+         patch(
+             "app.main.time.sleep",
+             side_effect=KeyboardInterrupt
+         ):
 
-    mock_create_tables.assert_called_once()
+        try:
+            main()
+        except KeyboardInterrupt:
+            pass
+
     mock_run_dmi_etl.assert_called_once()
