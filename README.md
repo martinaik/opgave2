@@ -35,10 +35,11 @@ Projektet er opbygget som en ETL-pipeline, hvor data først hentes fra DMIs offe
 
 `main.py` fungerer som programmets hovedfil og starter databaseopsætningen samt ETL processen.
 
-ETL-processen er delt op i forskellige funktioner med hvert sit ansvar:
-- `extract_dmi.py` står for at hente data fra DMI's API.
+ETL-processen er delt op i forskellige funktioner og filer med hvert sit ansvar:
+- `extract_dmi.py` henter data fra DMI's API.
 - `transform.py` omdanner de hentede data til et ensartet format, som kan bruges af databasen.
-- `load.py` står for at indsætte data i PostgreSQL-databasen.
+- `load.py` indsætter de transformerede data i PostgreSQL-databasen.
+- `etl_dmi.py` styrer hele ETL-processen af dataen fra DMI's API.
 
 `database.py` indeholder databasefunktionerne og håndterer blandt andet oprettelse af tabeller og forbindelse til PostgreSQL.
 
