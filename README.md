@@ -48,18 +48,18 @@ Databasens struktur oprettes og versioneres ved hjælp af database migrations. `
 ## ER diagram over databasestrukturen
 ```mermaid
 erDiagram
-    STATION ||--o{ MEASUREMENT : has
     SOURCE ||--o{ MEASUREMENT : provides
+    STATION ||--o{ MEASUREMENT : has
+
+    SOURCE {
+        integer source_id PK
+        varchar name UK
+    }
 
     STATION {
         varchar station_id PK
         float latitude
         float longitude
-    }
-
-    SOURCE {
-        integer source_id PK
-        varchar name UK
     }
 
     MEASUREMENT {
