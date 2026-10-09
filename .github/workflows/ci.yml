@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Hent projektets kode
+        uses: actions/checkout@v4
+
+      - name: Opret miljøvariabler til test
+        run: |
+          cat > .env <<'EOF'
+          POSTGRES_HOST=db
+          POSTGRES_PORT=5432
+          POSTGRES_DB=postgres_db
+          POSTGRES_USER=postgres
+          POSTGRES_PASSWORD=ci_test_password
+          PGADMIN_USER_EMAIL=ci@example.com
+          PGADMIN_PASSWORD=ci_test_password
+          EOF
+
+      - name: Byg Docker-miljøet
+        run: docker compose build tests
+
+      - name: Start database og kør tests
+        run: docker compose run --build --rm tests
+
+      - name: Vis logs ved fejl
+        if: failure()
+        run: docker compose logs
+
+      - name: Ryd op
+        if: always()
+        run: docker compose down -v
