@@ -122,3 +122,12 @@ erDiagram
 ```
 
 ## UML-diagram
+```mermaid
+flowchart TD
+    B[main.py] --> C[etl_dmi.py]
+    C --> D[Hent data fra DMI<br/>extract_dmi.py]
+    D --> E[Transformér data<br/>transform.py]
+    E --> F[Indlæs data i PostgreSQL<br/>load.py]
+    F --> G[Vent 10 minutter]
+    G --> C
+```
