@@ -125,9 +125,9 @@ erDiagram
 ```mermaid
 flowchart TD
     B[main.py] --> C[etl_dmi.py]
-    C --> D[Hent data fra DMI<br/>extract_dmi.py]
-    D --> E[Transformér data<br/>transform.py]
-    E --> F[Indlæs data i PostgreSQL<br/>load.py]
+    C --> D["extract_dmi.py<br/>Hent data fra DMI"]
+    D --> E["transform.py<br/>Transformér data"]
+    E --> F["load.py<br/>Indlæs data i PostgreSQL"]
     F --> G[Vent 10 minutter]
     G --> C
 ```
