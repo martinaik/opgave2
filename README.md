@@ -25,7 +25,7 @@ Projektets Docker-image bygges med kommandoen `docker compose build app`.
 Kommandoen bygger applikationens Docker-image ud fra projektets Dockerfile og installerer de nødvendige Python-pakker.
 
 ### Test projektet
-Projektet testes med enhedstest ved hjælp af pakken `pytest`. Projektets tests køres med kommandoen `docker compose run --rm app pytest`. Testene kontrollerer blandt andet, at data bliver transformeret og indlæst korrekt, samt at de forskellige dele af ETL-processen fungerer. Testenes coverage kan tjekkes med kommandoen `docker compose run --rm app pytest --cov=app --cov=etl`. 
+Projektet testes med enhedstest ved hjælp af pakken `pytest`. Projektets tests køres med kommandoen `docker compose run --build --rm tests`. Testene kontrollerer blandt andet, at data bliver transformeret og indlæst korrekt, samt at de forskellige dele af ETL-processen fungerer. Testenes code coverage bliver samtidig vist. 
 
 ### Kør projektet
 Projektet køres ved at PostgreSQL-databasen først startes med kommandoen `docker compose up -d db`. Derefter kan applikationen køres med `docker compose run --rm app python -m app.main`. Når programmet startes, oprettes databasetabeller, og data fra DMIs API hentes for de seneste 10 minutter. Dataene transformeres til projektets format og indsættes i PostgreSQL-databasen. Programmet fortsætter herefter med at hente nye data hvert 10. minut, så længe programmet kører.
