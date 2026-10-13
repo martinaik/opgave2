@@ -1,7 +1,17 @@
 # Import necessary modules
+import logging
+import time
+import psycopg
 from app.database import get_connection
 
-def load_observation(observation: dict) -> None:
+# Set up logging
+logger = logging.getLogger(__name__)
+
+# Constants for retrying database operations
+MAX_RETRIES = 6
+RETRY_DELAY = 5
+
+def load_observation_once(observation: dict) -> None:
     """ 
     Loads an observation into the database. 
     If the observation already exists, it updates the existing record.
@@ -192,3 +202,46 @@ def load_observation(observation: dict) -> None:
                 observation.get("leav_hum_dur_past10min"),
                 observation.get("leav_hum_dur_past1h")
             ))
+
+def load_observation(observation: dict) -> None:
+    """ Loads an observation, retrying temporary database errors. """
+
+    # Retry loading the observation in case of temporary database errors
+    for attempt in range(1, MAX_RETRIES + 1):
+        try:
+            load_observation_once(observation)
+            return
+
+        # Handle temporary database connection errors
+        except (
+            psycopg.OperationalError,
+            psycopg.InterfaceError,
+        ) as error:
+            # Log the temporary database error and retry
+            logger.warning(
+                "Database connection failed "
+                "(attempt %s/%s): %s",
+                attempt,
+                MAX_RETRIES,
+                error,
+            )
+
+            # If this was the last attempt, raise the exception
+            if attempt < MAX_RETRIES:
+                delay = RETRY_DELAY * attempt
+
+                # Log the retry attempt and wait before trying again
+                logger.info(
+                    "Retrying database operation in %s seconds.",
+                    delay,
+                )
+
+                time.sleep(delay)
+
+            else:
+                # Log the failure after all attempts and raise the exception
+                logger.exception(
+                    "Could not save observation after %s attempts.",
+                    MAX_RETRIES,
+                )
+                raise
