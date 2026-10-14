@@ -43,7 +43,7 @@ ETL-processen er delt op i forskellige funktioner og filer med hvert sit ansvar:
 
 `database.py` indeholder funktioner til at oprette forbindelse til PostgreSQL og til at oprette eller finde en datakilde i source-tabellen.
 
-Databasens struktur oprettes og versioneres ved hjælp af database migrations. `001_initial_scheme.sql` indeholder den første version af databasestrukturen og opretter tabellerne `source`, `station` og `measurement`. Fremtidige ændringer af databasestrukturen kan oprettes som nye migrationsfiler.
+Databasens struktur oprettes og versionsstyres ved hjælp af database migrationer. `migrations.py` håndterer databasemigrationer. Migrationsfilen `001_initial_scheme.sql` indeholder den første version af databasestrukturen og opretter tabellerne `source`, `station` og `measurement`. Systemet registrerer gennemførte migrationer i en tabel og sikrer, at de ikke køres igen. Fremtidige ændringer af databasestrukturen implementeres som nye SQL-migrationsfiler, der automatisk anvendes af migrationssystemet.
 
 ## ER diagram over databasestrukturen
 ```mermaid
