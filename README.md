@@ -45,6 +45,8 @@ ETL-processen er delt op i forskellige funktioner og filer med hvert sit ansvar:
 
 Databasens struktur oprettes og versionsstyres ved hjælp af database migrationer. `migrations.py` håndterer databasemigrationer. Migrationsfilen `001_initial_scheme.sql` indeholder den første version af databasestrukturen og opretter tabellerne `source`, `station` og `measurement`. Systemet registrerer gennemførte migrationer i en tabel og sikrer, at de ikke køres igen. Fremtidige ændringer af databasestrukturen implementeres som nye SQL-migrationsfiler, der automatisk anvendes af migrationssystemet.
 
+ETL-pipelinen håndterer midlertidige forbindelsesfejl med automatisk genforsøg og ventetid, så behandlingen kan fortsætte, når forbindelsen er genetableret. Dataen valideres samtidig under transformationen, hvor måleparametre kontrolleres for gyldige værdier, inden de indlæses i databasen.
+
 ## ER diagram over databasestrukturen
 ```mermaid
 erDiagram
