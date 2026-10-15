@@ -153,12 +153,12 @@ Endpointet `/measurements` kan filtreres med følgende query-parametre:
 Parametrene kan kombineres i samme forespørgsel.
 
 ### Eksempel på et API-kald
-Følgende forespørgsel henter op til 50 målinger fra målestation 05440 i tidsrummet 15. oktober 2026 kl. 12:00 - 13:00:
+Følgende forespørgsel henter op til 50 målinger fra målestation 05440 i tidsrummet 15. oktober 2026 kl. 08:00 - 09:00:
 
-`GET /measurements?station_id=05440&start_time=2026-10-15T12:00:00Z&end_time=2026-10-15T13:00:00Z&limit=50`.
+`GET /measurements?station_id=05440&start_time=2026-10-15T08:00:00Z&end_time=2026-10-15T09:00:00Z&limit=50`.
 
 Forespørgslen kan udføres i en browser: 
-http://localhost:8000/measurements?station_id=05440&start_time=2026-10-14T12:00:00Z&end_time=2026-10-14T13:00:00Z&limit=50
+http://localhost:8000/measurements?station_id=05440&start_time=2026-10-15T08:00:00Z&end_time=2026-10-15T09:00:00Z&limit=50
 
 API'en returnerer de matchende målinger i JSON-format. Hvis ingen målinger matcher filtrene, returneres en tom liste.
 
