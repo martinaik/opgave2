@@ -43,7 +43,9 @@ ETL-processen er delt op i forskellige funktioner og filer med hvert sit ansvar:
 
 `database.py` indeholder funktioner til at oprette forbindelse til PostgreSQL og til at oprette eller finde en datakilde i source-tabellen.
 
-Databasens struktur oprettes og versioneres ved hjælp af database migrations. `001_initial_scheme.sql` indeholder den første version af databasestrukturen og opretter tabellerne `source`, `station` og `measurement`. Fremtidige ændringer af databasestrukturen kan oprettes som nye migrationsfiler.
+Databasens struktur oprettes og versionsstyres ved hjælp af database migrationer. `migrations.py` håndterer databasemigrationer. Migrationsfilen `001_initial_scheme.sql` indeholder den første version af databasestrukturen og opretter tabellerne `source`, `station` og `measurement`. Systemet registrerer gennemførte migrationer i en tabel og sikrer, at de ikke køres igen. Fremtidige ændringer af databasestrukturen implementeres som nye SQL-migrationsfiler, der automatisk anvendes af migrationssystemet.
+
+ETL-pipelinen håndterer midlertidige forbindelsesfejl med automatisk genforsøg og ventetid, så behandlingen kan fortsætte, når forbindelsen er genetableret. Dataen valideres samtidig under transformationen, hvor måleparametre kontrolleres for gyldige værdier, inden de indlæses i databasen.
 
 ## ER diagram over databasestrukturen
 ```mermaid
@@ -131,3 +133,39 @@ flowchart TD
     F --> G[Vent 10 minutter]
     G --> C
 ```
+
+## REST API
+Projektet indeholder en REST API udviklet med FastAPI, som giver adgang til miljødataen indsamlet fra DMI og gemt i PostgreSQL-databasen. API'en startes fra projektets rodmappe ved at køre kommandoen `docker compose run --build --rm --service-ports app uvicorn app.api:app --host 0.0.0.0 --port 8000`. Når API'en er startet, er den tilgængelig lokalt på http://localhost:8000. Den interaktive dokumentation kan tilgås via http://localhost:8000/doc, hvor det er muligt at se de tilgængelige endpoints, afprøve forespørgsler og se de returnerede data. For at API'ens data-endpoints kan anvendes, skal PostgreSQL-databasen være tilgængelig, og de nødvendige databasetabeller skal være oprettet. 
+
+API'en har følgende endpoints:
+- GET `/health`: Kontrollerer, om API'en svarer.
+- GET `/stations`: Henter alle målestationer fra databasen.
+- GET `/stations/{station_id}`: Henter oplysninger om en bestemt målestation ud fra dens ID.
+- GET `/sources`: Henter alle datakilder fra databasen.
+- GET `/measurements`: Henter målinger fra databasen med mulighed for at filtrere efter målestation, datakilde og tidspunkt.
+
+Endpointet `/measurements` kan filtreres med følgende query-parametre:
+- `station_id`: Filtrerer efter målestation.
+- `source_id`: Filtrerer efter datakilde.
+- `start_time`: Angiver det tidligste observationstidspunkt.
+- `end_time`: Angiver det seneste observationstidspunkt.
+- `limit`: Begrænser antallet af returnerede målinger til mellem 1 og 1000.
+Parametrene kan kombineres i samme forespørgsel.
+
+### Eksempel på et API-kald
+Følgende forespørgsel henter op til 50 målinger fra målestation 05440 i tidsrummet 15. oktober 2026 kl. 08:00 - 09:00:
+
+`GET /measurements?station_id=05440&start_time=2026-10-15T08:00:00Z&end_time=2026-10-15T09:00:00Z&limit=50`.
+
+Forespørgslen kan udføres i en browser: 
+http://localhost:8000/measurements?station_id=05440&start_time=2026-10-15T08:00:00Z&end_time=2026-10-15T09:00:00Z&limit=50
+
+API'en returnerer de matchende målinger i JSON-format. Hvis ingen målinger matcher filtrene, returneres en tom liste.
+
+
+
+
+
+
+
+
