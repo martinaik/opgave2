@@ -149,7 +149,8 @@ Endpointet `/measurements` kan filtreres med følgende query-parametre:
 - `source_id`: Filtrerer efter datakilde.
 - `start_time`: Angiver det tidligste observationstidspunkt.
 - `end_time`: Angiver det seneste observationstidspunkt.
-- `limit`: Begrænser antallet af returnerede målinger til mellem 1 og 1000.
+- `limit`: Begrænser antallet af returnerede målinger til mellem 1 og 1000. Hvis der ikke angives en værdi for limit, returneres 1000 målinger.
+
 Parametrene kan kombineres i samme forespørgsel.
 
 ### Eksempel på et API-kald
