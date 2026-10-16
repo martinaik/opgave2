@@ -6,8 +6,7 @@ from app.database import get_connection
 # Set up FastAPI application
 app = FastAPI(
     title = "DMI Data API",
-    description = "API for DMI data measurements.",
-    version = "1.0.0"
+    description = "API for DMI data measurements."
 )
 
 @app.get("/")
