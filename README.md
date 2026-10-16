@@ -135,7 +135,7 @@ flowchart TD
 ```
 
 ## REST API
-Projektet indeholder en REST API udviklet med FastAPI, som giver adgang til miljødataen indsamlet fra DMI og gemt i PostgreSQL-databasen. API'en startes fra projektets rodmappe ved at køre kommandoen `docker compose run --build --rm --service-ports app uvicorn app.api:app --host 0.0.0.0 --port 8000`. Når API'en er startet, er den tilgængelig lokalt på http://localhost:8000. Den interaktive dokumentation kan tilgås via http://localhost:8000/doc, hvor det er muligt at se de tilgængelige endpoints, afprøve forespørgsler og se de returnerede data. For at API'ens data-endpoints kan anvendes, skal PostgreSQL-databasen være tilgængelig, og de nødvendige databasetabeller skal være oprettet. 
+Projektet indeholder en REST API udviklet med FastAPI, som giver adgang til miljødataen indsamlet fra DMI og gemt i PostgreSQL-databasen. API'en startes fra projektets rodmappe ved at køre kommandoen `docker compose run --build --rm --service-ports app uvicorn app.api:app --host 0.0.0.0 --port 8000`. Når API'en er startet, er den tilgængelig lokalt på http://localhost:8000. Den interaktive dokumentation kan tilgås via http://localhost:8000/docs, hvor det er muligt at se de tilgængelige endpoints, afprøve forespørgsler og se de returnerede data. For at API'ens data-endpoints kan anvendes, skal PostgreSQL-databasen være tilgængelig, og de nødvendige databasetabeller skal være oprettet. 
 
 API'en har følgende endpoints:
 - GET `/health`: Kontrollerer, om API'en svarer.
@@ -149,16 +149,17 @@ Endpointet `/measurements` kan filtreres med følgende query-parametre:
 - `source_id`: Filtrerer efter datakilde.
 - `start_time`: Angiver det tidligste observationstidspunkt.
 - `end_time`: Angiver det seneste observationstidspunkt.
-- `limit`: Begrænser antallet af returnerede målinger til mellem 1 og 1000.
+- `limit`: Begrænser antallet af returnerede målinger til mellem 1 og 1000. Hvis der ikke angives en værdi for limit, returneres 1000 målinger.
+
 Parametrene kan kombineres i samme forespørgsel.
 
 ### Eksempel på et API-kald
-Følgende forespørgsel henter op til 50 målinger fra målestation 05440 i tidsrummet 15. oktober 2026 kl. 08:00 - 09:00:
+Følgende forespørgsel henter op til 50 målinger fra målestation 06033 i tidsrummet 15. oktober 2026 kl. 08:00 - 09:00:
 
-`GET /measurements?station_id=05440&start_time=2026-10-15T08:00:00Z&end_time=2026-10-15T09:00:00Z&limit=50`.
+`GET /measurements?station_id=06033&start_time=2026-10-15T08:00:00Z&end_time=2026-10-15T09:00:00Z&limit=50`.
 
 Forespørgslen kan udføres i en browser: 
-http://localhost:8000/measurements?station_id=05440&start_time=2026-10-15T08:00:00Z&end_time=2026-10-15T09:00:00Z&limit=50
+http://localhost:8000/measurements?station_id=06033&start_time=2026-10-15T08:00:00Z&end_time=2026-10-15T09:00:00Z&limit=50
 
 API'en returnerer de matchende målinger i JSON-format. Hvis ingen målinger matcher filtrene, returneres en tom liste.
 
