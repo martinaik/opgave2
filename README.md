@@ -135,7 +135,7 @@ flowchart TD
 ```
 
 ## REST API
-Projektet indeholder en REST API udviklet med FastAPI, som giver adgang til miljødataen indsamlet fra DMI og gemt i PostgreSQL-databasen. API'en startes fra projektets rodmappe ved at køre kommandoen `docker compose run --build --rm --service-ports app uvicorn app.api:app --host 0.0.0.0 --port 8000`. Når API'en er startet, er den tilgængelig lokalt på http://localhost:8000. Den interaktive dokumentation kan tilgås via http://localhost:8000/doc, hvor det er muligt at se de tilgængelige endpoints, afprøve forespørgsler og se de returnerede data. For at API'ens data-endpoints kan anvendes, skal PostgreSQL-databasen være tilgængelig, og de nødvendige databasetabeller skal være oprettet. 
+Projektet indeholder en REST API udviklet med FastAPI, som giver adgang til miljødataen indsamlet fra DMI og gemt i PostgreSQL-databasen. API'en startes fra projektets rodmappe ved at køre kommandoen `docker compose run --build --rm --service-ports app uvicorn app.api:app --host 0.0.0.0 --port 8000`. Når API'en er startet, er den tilgængelig lokalt på http://localhost:8000. Den interaktive dokumentation kan tilgås via http://localhost:8000/docs, hvor det er muligt at se de tilgængelige endpoints, afprøve forespørgsler og se de returnerede data. For at API'ens data-endpoints kan anvendes, skal PostgreSQL-databasen være tilgængelig, og de nødvendige databasetabeller skal være oprettet. 
 
 API'en har følgende endpoints:
 - GET `/health`: Kontrollerer, om API'en svarer.
