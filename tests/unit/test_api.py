@@ -195,7 +195,6 @@ def test_get_measurements(mock_get_connection):
     mock_cursor = setup_measurement_mock(mock_get_connection)
 
     response = client.get("/measurements")
-    print(response.json())
 
     assert response.status_code == 200
 
