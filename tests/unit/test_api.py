@@ -195,6 +195,7 @@ def test_get_measurements(mock_get_connection):
     mock_cursor = setup_measurement_mock(mock_get_connection)
 
     response = client.get("/measurements")
+    print(response.json())
 
     assert response.status_code == 200
 
@@ -202,7 +203,7 @@ def test_get_measurements(mock_get_connection):
     assert len(data) == 1
     assert data[0]["station_id"] == "06058"
     assert data[0]["source_id"] == 1
-    assert data[0]["observed"] == "2026-10-01T12:00:00"
+    assert data[0]["observed"] == "2026-10-01T12:00:00" 
     assert data[0]["value"] == 15.5
 
     mock_cursor.execute.assert_called_once()
@@ -258,8 +259,8 @@ def test_get_measurements_invalid_time_range():
     )
 
 def test_get_measurements_limit_too_high():
-    """ Tests that a limit above 1000 returns HTTP 422. """
-    response = client.get("/measurements?limit=1001")
+    """ Tests that a limit above 100 returns HTTP 422. """
+    response = client.get("/measurements?limit=101")
 
     assert response.status_code == 422
 

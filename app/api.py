@@ -101,7 +101,7 @@ def get_measurements(
     source_id: int | None = None,
     start_time: datetime | None = None,
     end_time: datetime | None = None,
-    limit: int = Query(default=1000, ge=1, le=100),
+    limit: int = Query(default=100, ge=1, le=100),
 ):
     """ Returns measurements filtered by station, source and time. """
 
