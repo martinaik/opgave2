@@ -1,4 +1,4 @@
 psycopg[binary]==3.3.5
 requests
-fastapi
+fastapi==0.143.0
 uvicorn[standard]
