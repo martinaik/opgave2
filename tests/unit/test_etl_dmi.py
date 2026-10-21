@@ -81,3 +81,36 @@ def test_run_dmi_etl() -> None:
     assert mock_status.call_count == 2
     mock_status.assert_any_call(10, "processing")
     mock_status.assert_any_call(10, "completed")
+
+def test_run_dmi_etl_marks_batch_as_failed() -> None:
+    """ Tests that a batch is marked as failed if transformation fails. """
+
+    fake_data = {
+        "features": [{"properties": {}, "geometry": {}}]
+    }
+ 
+    fake_batch = {
+        "batch_id": 10,
+        "source_id": 1,
+        "raw_data": fake_data["features"],
+        "status": "pending",
+    }
+
+    with (
+        patch("etl.etl_dmi.create_source", return_value=1),
+        patch("etl.etl_dmi.extract_dmi", return_value=fake_data),
+        patch("etl.etl_dmi.save_batch", return_value=10),
+        patch("etl.etl_dmi.get_pending_batches", return_value=[fake_batch]),
+        patch("etl.etl_dmi.update_batch_status") as mock_status,
+        patch(
+            "etl.etl_dmi.transform_observations",
+            side_effect=ValueError("Invalid observation"),
+        ),
+        patch("etl.etl_dmi.load_observation"),
+    ):
+        run_dmi_etl()
+
+    mock_status.assert_any_call(10, "processing")
+    mock_status.assert_any_call(
+        10, "failed", "Invalid observation"
+    )
