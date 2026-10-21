@@ -88,7 +88,7 @@ def test_run_dmi_etl_marks_batch_as_failed() -> None:
     fake_data = {
         "features": [{"properties": {}, "geometry": {}}]
     }
-
+ 
     fake_batch = {
         "batch_id": 10,
         "source_id": 1,
