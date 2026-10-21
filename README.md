@@ -54,7 +54,7 @@ flowchart TD
     A[main.py] --> B[etl_dmi.py]
     B --> C["migrations.py<br/>Kør databasemigrationer"]
     B --> C["extract_dmi.py<br/>Hent data fra DMI"]
-    C --> D["staging.py<br/>Gem rå data i stating area"]
+    C --> D["staging.py<br/>Gem rå data i staging area"]
     D --> E["transform.py<br/>Valider og transformér data"]
     E --> F["load.py<br/>Indlæs data i PostgreSQL"]
     F --> G[Vent 10 minutter]
