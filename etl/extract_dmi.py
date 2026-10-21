@@ -23,7 +23,7 @@ RETRY_DELAY = 5
 
 def extract_dmi() -> dict:
     """
-    Extract data from the DMI API.
+    Extracts data from the DMI API.
 
     Retries the request after temporary connection errors,
     timeouts, HTTP 429 errors, and server errors.

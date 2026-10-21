@@ -20,7 +20,6 @@ def load_observation_once(observation: dict) -> None:
     # Connect to the database
     with get_connection() as conn:
         with conn.cursor() as cur:
-
             # Insert the station into the station table
             cur.execute("""
                 INSERT INTO station (station_id, latitude, longitude)
@@ -226,7 +225,7 @@ def load_observation(observation: dict) -> None:
                 error,
             )
 
-            # If this was the last attempt, raise the exception
+            # Attempt to retry the operation if we haven't reached the maximum number of retries
             if attempt < MAX_RETRIES:
                 delay = RETRY_DELAY * attempt
 

@@ -11,7 +11,7 @@ MIGRATIONS_DIR = Path(__file__).resolve().parent.parent / "migrations"
 
 def run_migrations() -> None:
     """ Runs database migrations that have not been applied yet. """
-
+    
     # Create a table that tracks completed migrations
     with get_connection() as conn:
         with conn.cursor() as cur:
@@ -49,7 +49,7 @@ def run_migrations() -> None:
                 sql = migration.read_text(encoding="utf-8")
                 cur.execute(sql)
 
-                # Record the migration in the same transaction
+                # Record the migration as applied
                 cur.execute(
                     "INSERT INTO schema_migrations (version) VALUES (%s)",
                     (migration.name,)

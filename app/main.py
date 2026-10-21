@@ -18,7 +18,6 @@ logger = logging.getLogger(__name__)
 
 def main() -> None:
     """ Runs database migrations and the ETL process continuously. """
-
     while True:
         try:
             # Run migrations before starting the ETL process
