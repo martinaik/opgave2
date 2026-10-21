@@ -95,6 +95,37 @@ def get_station(station_id: str):
             detail="Could not retrieve station from the database.",
         ) from exc
 
+@app.get("/sources")
+def get_sources():
+    """ Returns all data sources from the database. """
+    try:
+        # Get a connection to the database and fetch all sources
+        with get_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute("""
+                    SELECT source_id, name
+                    FROM source
+                    ORDER BY source_id;
+                """)
+
+                # Fetch the rows from the query result
+                rows = cur.fetchall()
+
+                # Return the sources as a list of dictionaries
+                return [
+                    {
+                        "source_id": row[0],
+                        "name": row[1],
+                    }
+                    for row in rows
+                ]
+    # Handle any exceptions that occur during the database query
+    except Exception as exc:
+        raise HTTPException(
+            status_code=500,
+            detail="Could not retrieve data sources from the database.",
+        ) from exc
+
 @app.get("/measurements")
 def get_measurements(
     station_id: str | None = None,
@@ -171,33 +202,3 @@ def get_measurements(
             detail="Could not retrieve measurements from the database.",
         ) from exc
 
-@app.get("/sources")
-def get_sources():
-    """ Returns all data sources from the database. """
-    try:
-        # Get a connection to the database and fetch all sources
-        with get_connection() as conn:
-            with conn.cursor() as cur:
-                cur.execute("""
-                    SELECT source_id, name
-                    FROM source
-                    ORDER BY source_id;
-                """)
-
-                # Fetch the rows from the query result
-                rows = cur.fetchall()
-
-                # Return the sources as a list of dictionaries
-                return [
-                    {
-                        "source_id": row[0],
-                        "name": row[1],
-                    }
-                    for row in rows
-                ]
-    # Handle any exceptions that occur during the database query
-    except Exception as exc:
-        raise HTTPException(
-            status_code=500,
-            detail="Could not retrieve data sources from the database.",
-        ) from exc

@@ -144,7 +144,7 @@ def validate_parameter(parameter_id: str, value: Any) -> bool:
 
     # Check if the parameter ID has specific validation rules
     rule = PARAMETER_RULES.get(parameter_id)
-    
+
     if rule is None:
         return True
 
@@ -154,13 +154,12 @@ def validate_parameter(parameter_id: str, value: Any) -> bool:
 
 def transform_observations(features: list[dict[str, Any]], source_id: int) -> list[dict[str, Any]]:
     """
-    Validate and transform observations into a common data structure.
+    Validates and transforms observations into a common data structure.
 
     Measurements from the same station and observation time are grouped
     into one dictionary. The input must use the normalized feature
     structure expected by this function.
     """
-
     # Validate the source_id and features input types
     if (
         not isinstance(source_id, int)

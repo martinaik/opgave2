@@ -64,7 +64,7 @@ def create_source(name: str) -> int:
     Returns the source ID.
     """
 
-    # Connect to the database and create the source if it does not exist
+    # Connect to the database 
     with get_connection() as conn:
         with conn.cursor() as cur:
             # Add the source if it does not already exist
