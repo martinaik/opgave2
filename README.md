@@ -3,7 +3,7 @@
 ## Beskrivelse af projektet
 Formålet med dette projekt er at indsamle og strukturere miljødata, som kan anvendes til at vurdere kvaliteten af det fysiske arbejdsmiljø. Projektet anvender vejrdata fra DMIs offentlige API og gemmer dataen i en PostgreSQL-database. Dataen behandles gennem en ETL-pipeline, hvor de først hentes fra API'en, gemmes i et staging area, valideres og transformeres til projektets datastruktur og til sidst indlæses i databasen.
 
-## Beskrivelse af, hvordan projektet bygges, testes og køres
+## Beskrivelse af, hvordan projektet bygges, køres og testes
 Projektet er udviklet i Python og køres ved hjælp af Docker og Docker Compose. Docker sørger for, at applikationen og PostgreSQL-databasen kan køre i separate containere med de nødvendige afhængigheder.
 
 Før projektet bygges og køres, skal der oprettes en `.env`-fil i projektets root-mappe. Filen skal indeholder:
@@ -24,11 +24,11 @@ Projektet indeholder en pgAdmin-container, som kan bruges til at se og arbejde m
 Projektets Docker-image bygges med kommandoen `docker compose build app`.
 Kommandoen bygger applikationens Docker-image ud fra projektets Dockerfile og installerer de nødvendige Python-pakker.
 
-### Test projektet
-Programmet testes med enhedstest ved hjælp af pakken `pytest`. Projektets tests køres med kommandoen `docker compose run --build --rm tests`. Testene kontrollerer blandt andet, at data bliver transformeret og indlæst korrekt, samt at de forskellige dele af ETL-processen fungerer. Testenes code coverage bliver samtidig vist. 
-
 ### Kør projektet
 Programmet køres ved først at starte PostgreSQL-databasen med kommandoen `docker compose up -d db`. Derefter startes applikationen med `docker compose run --build --rm app`. Når programmet startes, køres databasemigrationer, så databasen oprettes eller opdateres med de nødvendige tabeller. ETL-pipelinen henter herefter vejrdata fra DMIs API for de seneste 10 minutter. De rå data gemmes først i et staging area i PostgreSQL-databasen, hvor de opbevares i deres oprindelige format sammen med metadata om dataindsamlingen og behandlingens status. Herefter hentes dataene fra staging area, valideres og transformeres til projektets format, inden de indlæses i de relevante tabeller i databasen. Staging area gør det muligt at genoptage behandlingen af gemte data, hvis der opstår fejl under transformation eller indlæsning, uden at dataene nødvendigvis skal hentes igen fra DMIs API. For hver batch registreres behandlingens status, så det er muligt at holde styr på, om dataene afventer behandling, er under behandling, er fejlet eller er gennemført. Programmet fortsætter med at hente og behandle nye data hvert 10. minut, så længe det kører.
+
+### Test projektet
+Programmet testes med enhedstest ved hjælp af pakken `pytest`. Projektets tests køres med kommandoen `docker compose run --build --rm tests`. Testene kontrollerer blandt andet, at data bliver transformeret og indlæst korrekt, samt at de forskellige dele af ETL-processen fungerer. Testenes code coverage bliver samtidig vist. 
 
 ## Beskrivelse af den implementerede softwarearkitektur
 Projektet er opbygget som en ETL-pipeline, hvor data først hentes fra DMIs offentlige API og gemmes i et staging area. Herefter transformeres dataene til projektets datastruktur og indlæses til sidst i en PostgreSQL-database. 
