@@ -18,32 +18,43 @@ def run_dmi_etl() -> None:
     # Get the source ID for DMI
     source_id = create_source("DMI")
 
-    # Extract raw data and save it before transforming it
-    data = extract_dmi()
-    batch_id = save_batch(source_id, data["features"])
+    # Try to fetch and stage new data.
+    # If this fails, continue with batches already in staging.
+    try:
+        data = extract_dmi()
+        batch_id = save_batch(source_id, data["features"])
 
-    # Log that the raw data has been saved in a staging batch
-    logger.info("Saved raw DMI data in staging batch %s.", batch_id)
+        logger.info(
+            "Saved raw DMI data in staging batch %s.",
+            batch_id,
+        )
 
-    # Process batches from staging, including batches from earlier failures.
+    # Handle any exceptions that occur during the extraction and staging of new data
+    except Exception:
+        logger.exception(
+            "Could not fetch and stage new DMI data. "
+            "Will attempt to process existing staging batches."
+        )
+
+    # Process batches already saved in staging.
     for batch in get_pending_batches():
         current_batch_id = batch["batch_id"]
-        
+
         try:
-            # Update the batch status to "processing"
+            # Mark the batch as being processed
             update_batch_status(current_batch_id, "processing")
 
-            # Transform the raw data into observations
+            # Transform the raw data
             observations = transform_observations(
                 batch["raw_data"],
                 batch["source_id"],
             )
 
-            # Load each observation into the database
+            # Load observations into the database
             for observation in observations:
                 load_observation(observation)
 
-            # Update the batch status to "completed"
+            # Mark the batch as completed
             update_batch_status(current_batch_id, "completed")
 
             # Log that the staging batch has been completed
@@ -59,6 +70,7 @@ def run_dmi_etl() -> None:
                 "Failed to process staging batch %s.",
                 current_batch_id,
             )
+
             update_batch_status(
                 current_batch_id,
                 "failed",

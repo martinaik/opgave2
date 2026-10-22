@@ -57,7 +57,7 @@ def test_update_batch_status_invalid():
 
 @patch("etl.staging.get_connection")
 def test_get_pending_batches_empty(mock_get_connection):
-    """Tests retrieving batches when none are pending."""
+    """ Tests retrieving batches when none are pending. """
     mock_conn = MagicMock()
     mock_cursor = MagicMock()
 
