@@ -54,3 +54,18 @@ def test_update_batch_status_invalid():
     """ Tests that an invalid status raises ValueError. """
     with pytest.raises(ValueError, match="Invalid staging status"):
         update_batch_status(10, "invalid")
+
+@patch("etl.staging.get_connection")
+def test_get_pending_batches_empty(mock_get_connection):
+    """Tests retrieving batches when none are pending."""
+    mock_conn = MagicMock()
+    mock_cursor = MagicMock()
+
+    mock_get_connection.return_value.__enter__.return_value = mock_conn
+    mock_conn.cursor.return_value.__enter__.return_value = mock_cursor
+
+    mock_cursor.fetchall.return_value = []
+
+    result = get_pending_batches()
+
+    assert result == []
