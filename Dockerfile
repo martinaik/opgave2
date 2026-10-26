@@ -10,6 +10,7 @@ RUN pip install --no-cache-dir -r requirements-dev.txt
 COPY app ./app
 COPY etl ./etl
 COPY tests ./tests
-Copy migrations ./migrations
+COPY migrations ./migrations
+COPY visualizations ./visualizations
 
 CMD ["python", "-m", "app.main"]
