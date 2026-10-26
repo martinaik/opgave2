@@ -166,10 +166,65 @@ http://localhost:8000/measurements?station_id=06033&start_time=2026-10-15T08:00:
 
 API'en returnerer de matchende målinger i JSON-format. Hvis ingen målinger matcher filtrene, returneres en tom liste.
 
+## Visualiseringer
+Projektet indeholder filer, som visualiserer data fra PostgreSQL-databasen. Visualiseringerne kan bruges til at undersøge variationer, mulige sammenhænge og forskelle mellem målestationer.
 
+### Temperatur
+- Temperatur over tid for én station: Viser, hvordan temperaturen ændre sig over tid på en bestemt målestation samt den gennemsnitlige temperatur for stationen.
+- Sammenligning af temperatur over tid af tre stationer: Gør det muligt at sammenligne temperaturudviklingen mellem tre udvalgte målestationer.
+- Gennemsnitlig temperatur på tværs af stationer: Sammenligner stationernes gennemsnitstemperatur og viser forskelle mellem målestationerne.
+- Boxplot af temperaturfordelingen på tværs af stationer: Viser median, spredning og mulige ekstreme temperaturmålinger for hver målestation.
 
+### Vindhastighed
+- Vindhastighed over tid for én station: Viser, hvordan vindhastigheden varierer over tid samt den gennemsnitlige vindhastighed for en bestemt målestation.
+- Sammenligning af vindhastighed over tid for tre stationer: Sammenligner vindhastighedens udvikling mellem tre udvalgte målestationer.
+- Gennemsnitlig vindhastighed på tværs af stationer: Giver et overblik over forskelle i den gennemsnitlige vindhastighed mellem målestationerne.
 
+### Luftfugtighed
+- Luftfugtighed over tid for én station: Viser, hvordan luftfugtigheden ændrer sig over tid samt den gennemsnitlige luftfugtighed for en bestemt målestation.
+- Sammenligning af luftfugtighed over tid for tre stationer: Sammenligner luftfugtighedens udvikling mellem tre udvalgte målestationer.
+- Gennemsnitlig luftfugtighed på tværs af stationer: Viser forskelle i den gennemsnitlige luftfugtighed mellem målestationerne.
 
+### Sammenhæng mellem vejrparametre
+- Temperatur vs. vindhastighed over tid for én station: Sammenligner, hvordan temperatur og vindhastighed ændre sig over tid for en bestemt målestation.
+- Temperatur vs. vindhastighed - korrelation for alle stationer: Viser, om der er en statistisk sammenhæng mellem temperatur og vindhastighed på tværs af målestationerne.
+- Temperatur vs. luftfugtighed over tid for en station: Sammenligner, hvordan temperatur og luftfugtighed ændre sig over tid for en bestemt målestation.
+- Temperatur vs. luftfugtighed - korrelation for alle stationer: Viser, om temperatur og luftfugtighed har en statistisk sammenhæng på tværs af målestationerne.
+- Korrelationsheatmap mellem udvalgte vejrparametre: Samler korrelationerne mellem flere vejrparametre i en figur. Positive og negative korrelationer kan bruges til at identificere mulige sammenhænge.
 
+Et visualiseringsscript kan eksempelvis køres med kommandoen `docker compose run --rm app python -m visualization.temperature_boxplot`. De genererede grafer gemmes i projektets outputmappe `plots`. 
 
+### Eksempler på visualiseringer
+Nedenfor vises et udvalg af projektet visualiseringer. De illustrerer, hvordan vejrdata fra PostgreSQL-databasen kan bruges til at undersøge temperaturudviklingen, sammenligne målestationer og analysere sammenhænge mellem vejrparametre. De visualiserede data er indsamlet i perioden fra den 7. oktober 2026 til den 23. oktober 2026.
 
+**Temperatur over tid for stationen 06108**
+<img width="1500" height="750" alt="temperature_plot_1" src="https://github.com/user-attachments/assets/d2a2d1cc-6ff6-4c4d-8cc9-dc7ef4341db2" />
+
+Grafen viser temperaturmålingerne over tid samt den gennemsnitlige temperatur for målestationen 06108.
+
+**Sammenligning af temperatur for tre stationer**
+<img width="1800" height="900" alt="temperature_comparison_1" src="https://github.com/user-attachments/assets/8fbd102f-2f91-4e50-9cb6-a070818cd401" />
+
+Grafen sammenligner temperaturudviklingen for målestationerne 06108, 06110 og 06120. Grafen viser, at der er små forskelle i temperatur mellem de tre stationer, men at temperaturerne generelt følger det samme mønster over tid. 
+
+**Gennemsnitlig temperatur på tværs af stationer**
+<img width="1800" height="3036" alt="temperature_all_stations_1" src="https://github.com/user-attachments/assets/d9381278-241c-4621-91de-d428250e4479" />
+
+Grafen viser den gennemsnitlige temperatur på tværs af alle målestationer. Grafen viser, at der er stor forskel i gennemsnitstemperaturen mellem stationerne. Nogle stationer har temperatur helt ned omkring -18 °C, mens andre ligger op omkring 13 °C. Det viser, at temperaturen varierer meget mellem målestationerne.
+
+**Temperatur vs. vindhastighed på tværs af stationer**
+<img width="1800" height="3870" alt="temp_wind_correlation_all_stations_1" src="https://github.com/user-attachments/assets/96c9c86e-cf25-4fab-b074-a87402f9f14a" />
+
+Grafen viser sammenhængen mellem temperatur og vindhastighed på tværs af alle målestationer. Pearsons korrelationskoefficient er anvendt til at undersøge, om der er en positiv eller negativ sammenhæng mellem de to parametre. Nogle stationer har positiv korrelation, hvilket betyder, at temperaturen og vindhastigheden har tendens til at stige sammen. Andre stationer har en negativ korrelation, hvilket betyder, at temperaturen har tendens til at falde, når vindhastigheden stiger, og omvendt. Enkelte stationer har korrelation tæt på 0, hvilket betyder, at der ikke er nogen tydelig lineær sammenhæng mellem temperatur og vindhastighed. 
+
+Antallet af målinger varierer mellem stationerne, og nogle stationer har kun få målinger. Det kan påvirke, hvor pålidelig korrelationen er, da få målinger reducerer pålideligheden af vurderingen af korrelationen mellem temperatur og vindhastighed. 
+
+**Korrelationsheatmap mellem udvalgte vejrparametre**
+<img width="1650" height="1350" alt="correlation_heatmap1" src="https://github.com/user-attachments/assets/f2fd761a-9019-4904-8eb8-1f0ea66906f8" />
+
+Heatmappet viser korrelationer mellem vejrparametrene: lufttemperatur, dugpunktstemperatur, luftfugtighed, lufttryk, vindhastighed, nedbør de seneste 10 minutter, sigtbarhed, skydække og globalstråling. Pearsons korrelationskoefficient er anvendt til at måle den lineære sammenhæng mellem parametrene. Farverne viser, om der er en positiv eller negativ sammenhæng mellem parametrene, og hvor stærk sammenhængen er. For eksempel er der en positiv korrelation mellem lufttemperatur og dugpunktstemperatur, hvilket betyder, at de to parametre har tendens til at stige sammen. Der er derimod en negativ korrelation mellem skydække og globalstråling, hvilket viser en tendens til, at højere globalstråling hænger sammen med mindre skydække. 
+
+**Boxplot af temperaturfordelingen på tværs af stationer**
+<img width="1800" height="4830" alt="temperature_boxplot1" src="https://github.com/user-attachments/assets/017afa18-57ec-43cc-8555-e4f2e5b8a3a5" />
+
+Boxplottet viser temperaturfordelingen på tværs af alle målestationer. Nogle stationer har en lille spredning i temperaturmålingerne, mens andre har en større spredning og flere outliers. Det viser, at der er forskelle i temperaturvariation mellem stationerne.
