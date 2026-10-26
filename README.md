@@ -196,7 +196,7 @@ Projektet indeholder filer, som visualiserer data fra PostgreSQL-databasen. Visu
 - Temperatur vs. luftfugtighed - korrelation for alle stationer: Viser, om temperatur og luftfugtighed har en statistisk sammenhæng på tværs af målestationerne.
 - Korrelationsheatmap mellem udvalgte vejrparametre: Samler korrelationerne mellem flere vejrparametre i en figur. Positive og negative korrelationer kan bruges til at identificere mulige sammenhænge.
 
-Et visualiseringsscript kan eksempelvis køres med kommandoen `docker compose run --rm app python -m visualization.temperature_boxplot`. De genererede grafer gemmes i projektets outputmappe `plots`. 
+Et visualiseringsscript kan eksempelvis køres med kommandoen `docker compose run --rm app python -m visualizations.temperature_boxplot`. De genererede grafer gemmes i en outputmappe `plots`. 
 
 ### Eksempler på visualiseringer
 Nedenfor vises et udvalg af projektet visualiseringer. De illustrerer, hvordan vejrdata fra PostgreSQL-databasen kan bruges til at undersøge temperaturudviklingen, sammenligne målestationer og analysere sammenhænge mellem vejrparametre. De visualiserede data er indsamlet i perioden fra den 7. oktober 2026 til den 23. oktober 2026.
