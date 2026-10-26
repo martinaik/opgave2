@@ -2,3 +2,6 @@ psycopg[binary]==3.3.5
 requests
 fastapi==0.143.0
 uvicorn[standard]
+matplotlib
+scipy
+pandas

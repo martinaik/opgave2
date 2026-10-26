@@ -69,3 +69,5 @@ def test_get_pending_batches_empty(mock_get_connection):
     result = get_pending_batches()
 
     assert result == []
+
+

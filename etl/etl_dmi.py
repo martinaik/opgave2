@@ -18,8 +18,8 @@ def run_dmi_etl() -> None:
     # Get the source ID for DMI
     source_id = create_source("DMI")
 
-    # Try to fetch and stage new data.
-    # If this fails, continue with batches already in staging.
+    # Try to fetch and stage new data
+    # If this fails, continue with batches already in staging
     try:
         data = extract_dmi()
         batch_id = save_batch(source_id, data["features"])
