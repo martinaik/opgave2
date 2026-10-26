@@ -49,6 +49,8 @@ ETL-processen er delt op i flere filer med hvert sit ansvar:
 ETL-pipelinen håndterer midlertidige forbindelsesfejl med automatisk genforsøg og ventetid, så behandlingen kan fortsætte, når forbindelsen er genetableret.
 
 ## UML-diagram
+Nedenstående UML-diagram viser projektets overordnede struktur og sammenhængen mellem de forskellige komponenter i systemet.
+
 ```mermaid
 flowchart TD
     A[main.py] --> B[etl_dmi.py]
@@ -62,6 +64,8 @@ flowchart TD
 ```
 
 ## ER diagram over databasestrukturen
+Nedenstående ER diagram viser strukturen over databasen bestående af tre tabeller: source, station og measurement.
+
 ```mermaid
 erDiagram
     SOURCE ||--o{ MEASUREMENT : provides
