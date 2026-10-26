@@ -11,6 +11,6 @@ COPY app ./app
 COPY etl ./etl
 COPY tests ./tests
 COPY migrations ./migrations
-COPY visualization ./visualization
+COPY visualizations ./visualizations
 
 CMD ["python", "-m", "app.main"]
