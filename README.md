@@ -175,18 +175,18 @@ Projektet indeholder filer, som visualiserer data fra PostgreSQL-databasen. Visu
 
 ### Temperatur
 - Temperatur over tid for én station: Viser, hvordan temperaturen ændre sig over tid på en bestemt målestation samt den gennemsnitlige temperatur for stationen.
-- Sammenligning af temperatur over tid af tre stationer: Gør det muligt at sammenligne temperaturudviklingen mellem tre udvalgte målestationer.
+- Sammenligning af temperatur over tid af flere stationer: Gør det muligt at sammenligne temperaturudviklingen mellem udvalgte målestationer.
 - Gennemsnitlig temperatur på tværs af stationer: Sammenligner stationernes gennemsnitstemperatur og viser forskelle mellem målestationerne.
 - Boxplot af temperaturfordelingen på tværs af stationer: Viser median, spredning og mulige ekstreme temperaturmålinger for hver målestation.
 
 ### Vindhastighed
 - Vindhastighed over tid for én station: Viser, hvordan vindhastigheden varierer over tid samt den gennemsnitlige vindhastighed for en bestemt målestation.
-- Sammenligning af vindhastighed over tid for tre stationer: Sammenligner vindhastighedens udvikling mellem tre udvalgte målestationer.
+- Sammenligning af vindhastighed over tid for flere stationer: Sammenligner vindhastighedens udvikling mellem udvalgte målestationer.
 - Gennemsnitlig vindhastighed på tværs af stationer: Giver et overblik over forskelle i den gennemsnitlige vindhastighed mellem målestationerne.
 
 ### Luftfugtighed
 - Luftfugtighed over tid for én station: Viser, hvordan luftfugtigheden ændrer sig over tid samt den gennemsnitlige luftfugtighed for en bestemt målestation.
-- Sammenligning af luftfugtighed over tid for tre stationer: Sammenligner luftfugtighedens udvikling mellem tre udvalgte målestationer.
+- Sammenligning af luftfugtighed over tid for flere stationer: Sammenligner luftfugtighedens udvikling mellem udvalgte målestationer.
 - Gennemsnitlig luftfugtighed på tværs af stationer: Viser forskelle i den gennemsnitlige luftfugtighed mellem målestationerne.
 
 ### Sammenhæng mellem vejrparametre
