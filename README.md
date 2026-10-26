@@ -199,7 +199,7 @@ Projektet indeholder filer, som visualiserer data fra PostgreSQL-databasen. Visu
 Et visualiseringsscript kan eksempelvis køres med kommandoen `docker compose run --rm app python -m visualizations.temperature_boxplot`. De genererede grafer gemmes i en outputmappe `plots`. 
 
 ### Eksempler på visualiseringer
-Nedenfor vises et udvalg af projektet visualiseringer. De illustrerer, hvordan vejrdata fra PostgreSQL-databasen kan bruges til at undersøge temperaturudviklingen, sammenligne målestationer og analysere sammenhænge mellem vejrparametre. De visualiserede data er indsamlet i perioden fra den 7. oktober 2026 til den 23. oktober 2026.
+Nedenfor vises et udvalg af projektet visualiseringer. De illustrerer, hvordan vejrdata fra PostgreSQL-databasen kan bruges til at undersøge temperaturudviklingen, sammenligne målestationer og analysere sammenhænge mellem vejrparametre. De visualiserede data er indsamlet fra DMI's API i perioden fra den 7. oktober 2026 til den 23. oktober 2026.
 
 **Temperatur over tid for stationen 06108**
 <img width="1500" height="750" alt="temperature_plot_1" src="https://github.com/user-attachments/assets/d2a2d1cc-6ff6-4c4d-8cc9-dc7ef4341db2" />
