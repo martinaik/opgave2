@@ -1,7 +1,7 @@
 # Opgave 2 - Indsamling af miljødata
 
 ## Beskrivelse af projektet
-Formålet med dette projekt er at indsamle og strukturere miljødata, som kan anvendes til at vurdere kvaliteten af det fysiske arbejdsmiljø. Projektet anvender vejrdata fra DMIs offentlige API og gemmer dataen i en PostgreSQL-database. Dataen behandles gennem en ETL-pipeline, hvor de først hentes fra API'en, gemmes i et staging area, valideres og transformeres til projektets datastruktur og til sidst indlæses i databasen.
+Formålet med dette projekt er at indsamle, strukturere og analysere miljødata, som kan anvendes til at vurdere kvaliteten af det fysiske arbejdsmiljø. Projektet henter vejrdata fra DMIs offentlige API samt miljømålinger fra Herodot API'et, som måler forhold på kontoret. Dataene behandles gennem separate ETL-pipelines, hvor de hentes, gemmes i et staging area, valideres og transformeres til projektets datastruktur, inden de indlæses i en PostgreSQL-database. Projektet indeholder desuden en lokal REST API, som gør det muligt at tilgå data fra databasen. 
 
 ## Beskrivelse af, hvordan projektet bygges, køres og testes
 Projektet er udviklet i Python og køres ved hjælp af Docker og Docker Compose. Docker sørger for, at applikationen og PostgreSQL-databasen kan køre i separate containere med de nødvendige afhængigheder.
@@ -15,8 +15,14 @@ POSTGRES_HOST=db
 POSTGRES_PORT=5432
 PGADMIN_USER_EMAIL=admin@example.com
 PGADMIN_PASSWORD=password
+
+HERODOT_API_TOKEN = indsæt_api_token_her
 ```
-`POSTGRES_HOST=db` og `POSTGRES_PORT=5432` skal ikke ændres, da de bruges til forbindelsen mellem Docker-containerne. De øvrige værdier kan vælges af brugeren. Disse værdier skal bruges, når der oprettes forbindelse til databasen og pgAdmin. `.env`-filen indeholder loginoplysninger og skal derfor ikke pushes til GitHub og er inkluderet i `.gitignore`.
+`POSTGRES_HOST=db` og `POSTGRES_PORT=5432` skal ikke ændres, da de bruges til forbindelsen mellem Docker-containerne. 
+
+Erstat `indsæt_api_token_her` med det gyldige API-token til Herodot (https://herodot.spac.dk/). Tokenet bruges af Herodot ETL-processen til at godkende forespørgsler til API'et. 
+
+De øvrige værdier kan vælges af brugeren. Disse værdier skal bruges, når der oprettes forbindelse til databasen og pgAdmin. `.env`-filen indeholder loginoplysninger og skal derfor ikke pushes til GitHub og er inkluderet i `.gitignore`.
 
 Projektet indeholder en pgAdmin-container, som kan bruges til at se og arbejde med PostgreSQL-databasen. pgAdmin startes med kommandoen `docker compose up -d pgadmin`. Derefter åbnes http://localhost:8080/ i en browser. Log ind med email og password fra `.env`-filen (`PGADMIN_USER_EMAIL` og `PGADMIN_PASSWORD`). Når forbindelsen til PostgreSQL åbnes bliver brugeren bedt om et password. Her bruges værdien for `POSTGRES_PASSWORD` fra `.env`-filen. 
 
@@ -25,7 +31,7 @@ Projektets Docker-image bygges med kommandoen `docker compose build app`.
 Kommandoen bygger applikationens Docker-image ud fra projektets Dockerfile og installerer de nødvendige Python-pakker.
 
 ### Kør projektet
-Programmet køres ved først at starte PostgreSQL-databasen med kommandoen `docker compose up -d db`. Derefter startes applikationen med `docker compose run --build --rm app`. Når programmet startes, køres databasemigrationer, så databasen oprettes eller opdateres med de nødvendige tabeller. ETL-pipelinen henter herefter vejrdata fra DMIs API for de seneste 10 minutter. De rå data gemmes først i et staging area i PostgreSQL-databasen, hvor de opbevares i deres oprindelige format sammen med metadata om dataindsamlingen og behandlingens status. Herefter hentes dataene fra staging area, valideres og transformeres til projektets format, inden de indlæses i de relevante tabeller i databasen. Staging area gør det muligt at genoptage behandlingen af gemte data, hvis der opstår fejl under transformation eller indlæsning, uden at dataene nødvendigvis skal hentes igen fra DMIs API. For hver batch registreres behandlingens status, så det er muligt at holde styr på, om dataene afventer behandling, er under behandling, er fejlet eller er gennemført. Programmet fortsætter med at hente og behandle nye data hvert 10. minut, så længe det kører.
+Programmet køres ved først at starte PostgreSQL-databasen med kommandoen `docker compose up -d db`. Derefter startes applikationen med `docker compose run --build --rm app`. Når programmet startes, køres databasemigrationer, så databasen oprettes eller opdateres med de nødvendige tabeller. ETL-pipelinen henter herefter vejrdata fra DMIs API og målinger fra Herodot API'en for de seneste 10 minutter. De rå data gemmes først i et staging area i PostgreSQL-databasen, hvor de opbevares i deres oprindelige format sammen med metadata om dataindsamlingen og behandlingens status. Herefter hentes dataene fra staging area, valideres og transformeres til projektets format, inden de indlæses i de relevante tabeller i databasen. Staging area gør det muligt at genoptage behandlingen af gemte data, hvis der opstår fejl under transformation eller indlæsning, uden at dataene nødvendigvis skal hentes igen fra DMIs API. For hver batch registreres behandlingens status, så det er muligt at holde styr på, om dataene afventer behandling, er under behandling, er fejlet eller er gennemført. Programmet fortsætter med at hente og behandle nye data hvert 10. minut, så længe det kører.
 
 ### Test projektet
 Programmet testes med enhedstest ved hjælp af pakken `pytest`. Projektets tests køres med kommandoen `docker compose run --build --rm tests`. Testene kontrollerer blandt andet, at data bliver transformeret og indlæst korrekt, samt at de forskellige dele af ETL-processen fungerer. Testenes code coverage bliver samtidig vist. 
@@ -41,10 +47,12 @@ Databasens struktur oprettes og versionsstyres ved hjælp af database migratione
 
 ETL-processen er delt op i flere filer med hvert sit ansvar:
 - `extract_dmi.py` henter data fra DMI's API.
+- `extract_herodot.py` henter data fra herodot API'en.
 - `staging.py` gemmer de rå data i et staging area i PostgreSQL-databasen og håndterer hentning af batches samt opdatering af deres behandlingstatus.
 - `transform.py` validerer og omdanner dataene fra staging area til et ensartet format, som passer til projektets databasestruktur.
 - `load.py` indsætter de transformerede data i PostgreSQL-databasen.
-- `etl_dmi.py` styrer hele ETL-processen.
+- `etl_dmi.py` styrer ETL-processen for DMI dataen.
+- `etl_herodot.py` styrer ETL-processen for herodot dataen.
 
 ETL-pipelinen håndterer midlertidige forbindelsesfejl med automatisk genforsøg og ventetid, så behandlingen kan fortsætte, når forbindelsen er genetableret.
 
@@ -53,14 +61,19 @@ Nedenstående UML-diagram viser projektets overordnede struktur og sammenhængen
 
 ```mermaid
 flowchart TD
-    A[main.py] --> B[etl_dmi.py]
-    B --> C["migrations.py<br/>Kør databasemigrationer"]
-    B --> C["extract_dmi.py<br/>Hent data fra DMI"]
-    C --> D["staging.py<br/>Gem rå data i staging area"]
-    D --> E["transform.py<br/>Valider og transformér data"]
-    E --> F["load.py<br/>Indlæs data i PostgreSQL"]
-    F --> G[Vent 10 minutter]
-    G --> C
+    A[main.py] --> B["migrations.py<br/>Kør databasemigrationer"]
+    B --> C[etl_dmi.py]
+    C --> D["extract_dmi.py<br/>Hent data fra DMI"]
+    D --> E["staging.py<br/>Gem rå data i staging area"]
+    E --> F["transform.py<br/>Valider og transformér data"]
+    F --> G["load.py<br/>Indlæs data i PostgreSQL"]
+    G --> H[etl_herodot.py]
+    H --> I["extract_herodot.py<br/>Hent data fra Herodot"]
+    I --> J["staging.py<br/>Gem rå data i staging area"]
+    J --> K["transform.py<br/>Valider og transformér data"]
+    K --> L["load.py<br/>Indlæs data i PostgreSQL"]
+    L --> M[Vent 10 minutter]
+    M --> A
 ```
 
 ## ER diagram over databasestrukturen
@@ -70,6 +83,7 @@ Nedenstående ER diagram viser strukturen over databasen bestående af tre tabel
 erDiagram
     SOURCE ||--o{ MEASUREMENT : provides
     STATION ||--o{ MEASUREMENT : has
+    SOURCE ||--o{ HERODOT_MEASUREMENT : provides
 
     SOURCE {
         integer source_id PK
@@ -84,9 +98,9 @@ erDiagram
 
     MEASUREMENT {
         integer measurement_id PK
-        varchar station_id FK, UK
-        integer source_id FK, UK
-        timestamp observed UK
+        varchar station_id FK
+        integer source_id FK
+        timestamp observed
         float temp_dry
         float temp_dew
         float temp_mean_past1h
@@ -139,6 +153,19 @@ erDiagram
         float leav_hum_dur_past10min
         float leav_hum_dur_past1h
     }
+
+    HERODOT_MEASUREMENT {
+        integer measurement_id PK
+        uuid node_id
+        varchar instrument_id
+        varchar instrument_model
+        integer source_id FK
+        timestamp observed
+        float temperature
+        float co2_concentration
+        float humidity
+        float pressure
+    }
 ```
 
 ## REST API
@@ -171,7 +198,7 @@ http://localhost:8000/measurements?station_id=06033&start_time=2026-10-15T08:00:
 API'en returnerer de matchende målinger i JSON-format. Hvis ingen målinger matcher filtrene, returneres en tom liste.
 
 ## Visualiseringer
-Projektet indeholder filer, som visualiserer data fra PostgreSQL-databasen. Visualiseringerne kan bruges til at undersøge variationer, mulige sammenhænge og forskelle mellem målestationer.
+Projektet indeholder filer, som visualiserer data fra PostgreSQL-databasen hentet fra DMI's API. Visualiseringerne kan bruges til at undersøge variationer, mulige sammenhænge og forskelle mellem målestationer.
 
 ### Temperatur
 - Temperatur over tid for én station: Viser, hvordan temperaturen ændre sig over tid på en bestemt målestation samt den gennemsnitlige temperatur for stationen.
