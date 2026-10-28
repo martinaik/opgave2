@@ -18,7 +18,7 @@ def compare_all_stations() -> None:
                     AVG(temp_dry) AS average_temperature,
                     MIN(temp_dry) AS minimum_temperature,
                     MAX(temp_dry) AS maximum_temperature
-                FROM measurement
+                FROM dmi_measurement
                 WHERE temp_dry IS NOT NULL
                 GROUP BY station_id
                 ORDER BY AVG(temp_dry);

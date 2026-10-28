@@ -3,6 +3,7 @@ import logging
 import time
 from app.migrations import run_migrations
 from etl.etl_dmi import run_dmi_etl
+from etl.etl_herodot import run_herodot_etl
 
 # Time between ETL runs in seconds
 INTERVAL = 600  # 10 minutes
@@ -17,28 +18,43 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 def main() -> None:
-    """ Runs database migrations and the ETL process continuously. """
+    """ Runs migrations and both ETL processes continuously. """
+
     while True:
         try:
-            # Run migrations before starting the ETL process
+            # Run database migrations before starting the ETL processes
             logger.info("Checking database migrations...")
             run_migrations()
 
-            # Run the ETL process
-            logger.info("Running DMI ETL...")
-            run_dmi_etl()
-
-            # Log that the ETL process completed successfully
-            logger.info("DMI ETL completed. Waiting 10 minutes...")
-
-        # Handle any exceptions that occur during the ETL process
+        # Handle any exceptions that occur during the migration process
         except Exception:
             logger.exception(
-                "ETL cycle failed. "
-                "The program will try again in 10 minutes."
+                "Could not run database migrations. "
+                "Will retry in 10 minutes."
             )
+            time.sleep(INTERVAL)
+            continue
 
-        # Wait for the specified interval before the next cycle
+        # Run DMI ETL
+        try:
+            logger.info("Running DMI ETL...")
+            run_dmi_etl()
+            logger.info("DMI ETL completed.")
+
+        except Exception:
+            logger.exception("DMI ETL failed.")
+
+        # Run Herodot ETL independently
+        try:
+            logger.info("Running Herodot ETL...")
+            run_herodot_etl()
+            logger.info("Herodot ETL completed.")
+
+        except Exception:
+            logger.exception("Herodot ETL failed.")
+
+        # Wait before the next cycle
+        logger.info("Both ETL processes have been attempted. Waiting 10 minutes...")
         time.sleep(INTERVAL)
 
 # Run the main function

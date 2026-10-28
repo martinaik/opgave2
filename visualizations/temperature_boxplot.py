@@ -13,7 +13,7 @@ def create_temperature_boxplot() -> None:
             # Fetch temperature measurements from the measurement table
             cur.execute("""
                 SELECT station_id, temp_dry
-                FROM measurement
+                FROM dmi_measurement
                 WHERE temp_dry IS NOT NULL
                 ORDER BY station_id
             """)

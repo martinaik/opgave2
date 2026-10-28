@@ -111,7 +111,6 @@ def test_get_connection_retries_after_failure() -> None:
     assert mock_connect.call_count == 2
     mock_sleep.assert_called_once_with(5)
 
-
 def test_get_connection_retries_after_interface_error() -> None:
     """ Tests retrying after a database interface error. """
 

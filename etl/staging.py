@@ -3,8 +3,8 @@ import json
 from typing import Any
 from app.database import get_connection
 
-def save_batch(source_id: int, raw_data: list[dict[str, Any]]) -> int:
-    """ Saves raw observations as a staging batch and return its ID. """
+def save_batch(source_id: int, raw_data: dict | list) -> int:
+    """ Saves raw API data as a staging batch and return its ID. """
 
     # Connect to the database
     with get_connection() as conn:

@@ -14,7 +14,7 @@ def plot_humidity(station_id: str = "06108") -> None:
             cur.execute(
                 """
                 SELECT observed, humidity
-                FROM measurement
+                FROM dmi_measurement
                 WHERE humidity IS NOT NULL
                   AND station_id = %s
                 ORDER BY observed;

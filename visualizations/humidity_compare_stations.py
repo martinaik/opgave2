@@ -18,7 +18,7 @@ def compare_humidity_stations(station_ids: list[str] | None = None) -> None:
             cur.execute(
                 """
                 SELECT station_id, observed, humidity
-                FROM measurement
+                FROM dmi_measurement
                 WHERE humidity IS NOT NULL
                   AND station_id = ANY(%s)
                 ORDER BY observed;

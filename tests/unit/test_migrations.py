@@ -4,6 +4,7 @@ from app.migrations import run_migrations
 
 def create_mock_connection():
     """ Creates a mock database connection and cursor. """
+
     connection = MagicMock()
     cursor = MagicMock()
 
@@ -14,6 +15,7 @@ def create_mock_connection():
 
 def test_run_migrations_applies_new_migration(tmp_path):
     """ Tests that a new migration is executed and recorded. """
+
     migration_file = tmp_path / "001_initial_schema.sql"
     migration_file.write_text(
         "CREATE TABLE test_table (id INTEGER);",
@@ -41,6 +43,7 @@ def test_run_migrations_applies_new_migration(tmp_path):
 
 def test_run_migrations_skips_applied_migration(tmp_path):
     """ Tests that an already applied migration is skipped. """
+
     migration_file = tmp_path / "001_initial_schema.sql"
     migration_file.write_text(
         "CREATE TABLE test_table (id INTEGER);",
@@ -71,6 +74,7 @@ def test_run_migrations_skips_applied_migration(tmp_path):
 
 def test_run_migrations_applies_files_in_order(tmp_path):
     """ Tests that migration files are applied alphabetically. """
+
     first = tmp_path / "001_first.sql"
     second = tmp_path / "002_second.sql"
 
@@ -97,6 +101,7 @@ def test_run_migrations_applies_files_in_order(tmp_path):
 
 def test_run_migrations_logs_applied_migration(tmp_path, caplog):
     """ Tests that applying a migration is logged. """
+
     migration_file = tmp_path / "001_initial_schema.sql"
     migration_file.write_text("SELECT 1;", encoding="utf-8")
 
@@ -115,6 +120,7 @@ def test_run_migrations_logs_applied_migration(tmp_path, caplog):
 
 def test_run_migrations_does_not_record_failed_migration(tmp_path):
     """ Tests that a failed migration is not recorded. """
+    
     migration_file = tmp_path / "001_initial_schema.sql"
     migration_file.write_text("INVALID SQL;", encoding="utf-8")
 

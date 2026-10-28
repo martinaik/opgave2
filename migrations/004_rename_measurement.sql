@@ -1,0 +1,1 @@
+ALTER TABLE measurement RENAME TO dmi_measurement;

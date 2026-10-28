@@ -18,7 +18,7 @@ def compare_stations(station_ids: list[str] | None = None) -> None:
             cur.execute(
                 """
                 SELECT station_id, observed, temp_dry
-                FROM measurement
+                FROM dmi_measurement
                 WHERE temp_dry IS NOT NULL
                   AND station_id = ANY(%s)
                 ORDER BY observed;

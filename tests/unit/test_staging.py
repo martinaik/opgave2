@@ -6,6 +6,7 @@ from etl.staging import save_batch, get_pending_batches, update_batch_status
 @patch("etl.staging.get_connection")
 def test_save_batch(mock_get_connection):
     """ Tests saving a batch to the staging area. """
+
     mock_conn = MagicMock()
     mock_cursor = MagicMock()
 
@@ -21,6 +22,7 @@ def test_save_batch(mock_get_connection):
 @patch("etl.staging.get_connection")
 def test_get_pending_batches(mock_get_connection):
     """ Tests retrieving pending and failed batches. """
+
     mock_conn = MagicMock()
     mock_cursor = MagicMock()
 
@@ -40,6 +42,7 @@ def test_get_pending_batches(mock_get_connection):
 @patch("etl.staging.get_connection")
 def test_update_batch_status(mock_get_connection):
     """ Tests updating a batch status. """
+
     mock_conn = MagicMock()
     mock_cursor = MagicMock()
 
@@ -52,12 +55,14 @@ def test_update_batch_status(mock_get_connection):
 
 def test_update_batch_status_invalid():
     """ Tests that an invalid status raises ValueError. """
+
     with pytest.raises(ValueError, match="Invalid staging status"):
         update_batch_status(10, "invalid")
 
 @patch("etl.staging.get_connection")
 def test_get_pending_batches_empty(mock_get_connection):
     """ Tests retrieving batches when none are pending. """
+    
     mock_conn = MagicMock()
     mock_cursor = MagicMock()
 
