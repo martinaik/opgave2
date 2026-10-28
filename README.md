@@ -81,8 +81,8 @@ Nedenstående ER diagram viser strukturen over databasen, som består af fire ta
 
 ```mermaid
 erDiagram
-    SOURCE ||--o{ MEASUREMENT : provides
-    STATION ||--o{ MEASUREMENT : has
+    SOURCE ||--o{ DMI_MEASUREMENT : provides
+    STATION ||--o{ DMI_MEASUREMENT : has
     SOURCE ||--o{ HERODOT_MEASUREMENT : provides
 
     SOURCE {
