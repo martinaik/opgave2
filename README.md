@@ -77,7 +77,7 @@ flowchart TD
 ```
 
 ## ER diagram over databasestrukturen
-Nedenstående ER diagram viser strukturen over databasen bestående af tre tabeller: source, station og measurement.
+Nedenstående ER diagram viser strukturen over databasen, som består af fire tabeller: `source`, `station`, `dmi_measurement`, `herodot_measurement`. Tabellen `source` indeholder oplysninger om datakilderne, `station` indeholder oplysninger om DMI's målestationer, `dmi_measurement` indeholder vejrdata fra DMI, og `herodot_measurement` indeholder målinger fra Herodot.
 
 ```mermaid
 erDiagram
@@ -96,7 +96,7 @@ erDiagram
         float longitude
     }
 
-    MEASUREMENT {
+    DMI_MEASUREMENT {
         integer measurement_id PK
         varchar station_id FK
         integer source_id FK
