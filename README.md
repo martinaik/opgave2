@@ -169,18 +169,34 @@ erDiagram
 ```
 
 ## REST API
-Projektet indeholder en REST API udviklet med FastAPI, som giver adgang til miljødataen indsamlet fra DMI og gemt i PostgreSQL-databasen. API'en startes fra projektets rodmappe ved at køre kommandoen `docker compose up --build api`. Når API'en er startet, er den tilgængelig lokalt på http://localhost:8000. Den interaktive dokumentation kan tilgås via http://localhost:8000/docs, hvor det er muligt at se de tilgængelige endpoints, afprøve forespørgsler og se de returnerede data. For at API'ens data-endpoints kan anvendes, skal PostgreSQL-databasen være tilgængelig, og de nødvendige databasetabeller skal være oprettet. 
+Projektet indeholder en REST API udviklet med FastAPI, som giver adgang til miljødataen indsamlet fra DMI og Herodot gemt i PostgreSQL-databasen. API'en startes fra projektets rodmappe ved at køre kommandoen `docker compose up --build api`. Når API'en er startet, er den tilgængelig lokalt på http://localhost:8000. Den interaktive dokumentation kan tilgås via http://localhost:8000/docs, hvor det er muligt at se de tilgængelige endpoints, afprøve forespørgsler og se de returnerede data. For at API'ens data-endpoints kan anvendes, skal PostgreSQL-databasen være tilgængelig, og de nødvendige databasetabeller skal være oprettet. 
 
 API'en har følgende endpoints:
+- GET `/`: Returnere en velkomstbesked.
 - GET `/health`: Kontrollerer, om API'en svarer.
-- GET `/stations`: Henter alle målestationer fra databasen.
-- GET `/stations/{station_id}`: Henter oplysninger om en bestemt målestation ud fra dens ID.
 - GET `/sources`: Henter alle datakilder fra databasen.
-- GET `/measurements`: Henter målinger fra databasen med mulighed for at filtrere efter målestation, datakilde og tidspunkt.
+- GET `/dmi/stations`: Henter alle målestationer fra databasen.
+- GET `/dmi/stations/{station_id}`: Henter oplysninger om en bestemt målestation ud fra dens ID.
+- GET `/measurements`: Henter målinger fra både DMI og Herodot med mulighed for at filtrere efter datakilde og tidspunkt.
+- GET `/dmi/measurements`: Henter målinger fra DMI med mulighed for at filtrere efter station og tidspunkt.
+- GET `herodot/measurements`: Henter målinger fra Herodot med mulighed for at filtrere efter node, instrument id, instrument model og tidspunkt.
 
 Endpointet `/measurements` kan filtreres med følgende query-parametre:
-- `station_id`: Filtrerer efter målestation.
 - `source_id`: Filtrerer efter datakilde.
+- `start_time`: Angiver det tidligste observationstidspunkt.
+- `end_time`: Angiver det seneste observationstidspunkt.
+- `limit`: Begrænser antallet af returnerede målinger til mellem 1 og 100. Hvis der ikke angives en værdi for limit, returneres 100 målinger.
+
+Endpointet `/dmi/measurements` kan filtreres med følgende query-parametre:
+- `station_id`: Filtrerer efter målestation.
+- `start_time`: Angiver det tidligste observationstidspunkt.
+- `end_time`: Angiver det seneste observationstidspunkt.
+- `limit`: Begrænser antallet af returnerede målinger til mellem 1 og 100. Hvis der ikke angives en værdi for limit, returneres 100 målinger.
+
+Endpointet `/herodot/measurements` kan filtreres med følgende query-parametre:
+- `node_id`: Filtrerer efter node. 
+- `instrument_id`: Filtrerer efter instrument id.
+- `instrument_model`: Filtrerer efter instrument model.
 - `start_time`: Angiver det tidligste observationstidspunkt.
 - `end_time`: Angiver det seneste observationstidspunkt.
 - `limit`: Begrænser antallet af returnerede målinger til mellem 1 og 100. Hvis der ikke angives en værdi for limit, returneres 100 målinger.
@@ -188,12 +204,12 @@ Endpointet `/measurements` kan filtreres med følgende query-parametre:
 Parametrene kan kombineres i samme forespørgsel.
 
 ### Eksempel på et API-kald
-Følgende forespørgsel henter op til 50 målinger fra målestation 06033 i tidsrummet 15. oktober 2026 kl. 08:00 - 09:00:
+Følgende forespørgsel henter op til 50 målinger fra DMI for målestation 06033 i tidsrummet 15. oktober 2026 kl. 08:00 - 09:00:
 
-`GET /measurements?station_id=06033&start_time=2026-10-15T08:00:00Z&end_time=2026-10-15T09:00:00Z&limit=50`.
+`GET /dmi/measurements?station_id=06033&start_time=2026-10-15T08:00:00Z&end_time=2026-10-15T09:00:00Z&limit=50`.
 
 Forespørgslen kan udføres i en browser: 
-http://localhost:8000/measurements?station_id=06033&start_time=2026-10-15T08:00:00Z&end_time=2026-10-15T09:00:00Z&limit=50
+http://localhost:8000/dmi/measurements?station_id=06033&start_time=2026-10-15T08:00:00Z&end_time=2026-10-15T09:00:00Z&limit=50
 
 API'en returnerer de matchende målinger i JSON-format. Hvis ingen målinger matcher filtrene, returneres en tom liste.
 
