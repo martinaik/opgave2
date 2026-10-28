@@ -14,7 +14,7 @@ def plot_wind_speed(station_id: str = "06108") -> None:
             cur.execute(
                 """
                 SELECT observed, wind_speed
-                FROM measurement
+                FROM dmi_measurement
                 WHERE wind_speed IS NOT NULL
                   AND station_id = %s
                 ORDER BY observed;

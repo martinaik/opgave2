@@ -18,7 +18,7 @@ def compare_wind_stations(station_ids: list[str] | None = None) -> None:
             cur.execute(
                 """
                 SELECT station_id, observed, wind_speed
-                FROM measurement
+                FROM dmi_measurement
                 WHERE wind_speed IS NOT NULL
                   AND station_id = ANY(%s)
                 ORDER BY observed;

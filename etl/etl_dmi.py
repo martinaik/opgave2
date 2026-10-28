@@ -38,6 +38,11 @@ def run_dmi_etl() -> None:
 
     # Process batches already saved in staging.
     for batch in get_pending_batches():
+        # Only process batches belonging to DMI
+        if batch["source_id"] != source_id:
+            continue
+
+        # Get the batch ID for logging and processing
         current_batch_id = batch["batch_id"]
 
         try:

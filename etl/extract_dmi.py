@@ -90,6 +90,7 @@ def extract_dmi() -> dict:
                 error,
             )
 
+        # If this was not the last attempt, wait before retrying
         if attempt < MAX_RETRIES:
             delay = RETRY_DELAY * attempt
 

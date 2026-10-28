@@ -14,7 +14,7 @@ def plot_temp_humidity_correlation_all_stations() -> None:
             cur.execute(
                 """
                 SELECT station_id, temp_dry, humidity
-                FROM measurement
+                FROM dmi_measurement
                 WHERE temp_dry IS NOT NULL
                   AND humidity IS NOT NULL
                 ORDER BY station_id;

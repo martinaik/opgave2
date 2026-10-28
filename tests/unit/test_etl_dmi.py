@@ -145,7 +145,6 @@ def test_run_dmi_etl_marks_batch_as_failed() -> None:
     mock_status.assert_any_call(10, "failed", "Test error")
     mock_load.assert_not_called()
 
-
 def test_run_dmi_etl_reprocesses_failed_batch() -> None:
     """ A failed batch can be processed successfully on a later run. """
     fake_data = {
@@ -193,7 +192,6 @@ def test_run_dmi_etl_reprocesses_failed_batch() -> None:
     mock_load.assert_called_once_with(fake_observations[0])
     mock_status.assert_any_call(10, "completed")
 
-
 def test_run_dmi_etl_processes_existing_batches_if_dmi_fails() -> None:
     """ Existing staging batches are processed if DMI extraction fails. """
 
@@ -236,3 +234,32 @@ def test_run_dmi_etl_processes_existing_batches_if_dmi_fails() -> None:
     mock_get_batches.assert_called_once()
     mock_load.assert_called_once_with(fake_observations[0])
     mock_status.assert_any_call(10, "completed")
+
+def test_run_dmi_etl_skips_batches_from_other_sources() -> None:
+    """ Batches from other data sources are ignored. """
+    fake_data = {"features": []}
+
+    other_source_batch = {
+        "batch_id": 20,
+        "source_id": 2,
+        "raw_data": [{"value": 12.5}],
+        "status": "pending",
+    }
+
+    with (
+        patch("etl.etl_dmi.create_source", return_value=1),
+        patch("etl.etl_dmi.extract_dmi", return_value=fake_data),
+        patch("etl.etl_dmi.save_batch", return_value=21),
+        patch(
+            "etl.etl_dmi.get_pending_batches",
+            return_value=[other_source_batch],
+        ),
+        patch("etl.etl_dmi.update_batch_status") as mock_status,
+        patch("etl.etl_dmi.transform_observations") as mock_transform,
+        patch("etl.etl_dmi.load_observation") as mock_load,
+    ):
+        run_dmi_etl()
+
+    mock_status.assert_not_called()
+    mock_transform.assert_not_called()
+    mock_load.assert_not_called()
