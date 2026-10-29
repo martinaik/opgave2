@@ -182,10 +182,10 @@ def visualize_correlation_heatmap():
                 fontsize=11,
             )
 
-    ax.set_title("Pearson Correlation: DMI vs. Herodot", pad=15)
+    ax.set_title("Correlation Heatmap of DMI vs. Herodot", pad=15)
 
     colorbar = fig.colorbar(image, ax=ax)
-    colorbar.set_label("Pearson correlation coefficient")
+    colorbar.set_label("Pearson-correlation coefficient")
 
     fig.tight_layout()
 
