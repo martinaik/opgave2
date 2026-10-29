@@ -14,7 +14,7 @@ def plot_temp_wind_correlation_all_stations() -> None:
             cur.execute(
                 """
                 SELECT station_id, temp_dry, wind_speed
-                FROM measurement
+                FROM dmi_measurement
                 WHERE temp_dry IS NOT NULL
                   AND wind_speed IS NOT NULL
                 ORDER BY station_id;

@@ -14,7 +14,7 @@ def plot_temperature(station_id: str = "06108") -> None:
             cur.execute(
                 """
                 SELECT observed, temp_dry
-                FROM measurement
+                FROM dmi_measurement
                 WHERE temp_dry IS NOT NULL
                   AND station_id = %s
                 ORDER BY observed;

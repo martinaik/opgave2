@@ -14,7 +14,7 @@ def plot_temperature_vs_wind(station_id: str = "06108") -> None:
             cur.execute(
                 """
                 SELECT temp_dry, wind_speed
-                FROM measurement
+                FROM dmi_measurement
                 WHERE temp_dry IS NOT NULL
                   AND wind_speed IS NOT NULL
                   AND station_id = %s

@@ -22,7 +22,7 @@ def create_correlation_heatmap() -> None:
                     visibility,
                     cloud_cover,
                     radia_glob
-                FROM measurement
+                FROM dmi_measurement
             """)
             rows = cur.fetchall()
             columns = [description.name for description in cur.description]

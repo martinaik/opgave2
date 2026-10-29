@@ -32,7 +32,7 @@ PARAMETER_RULES: dict[str, tuple[float, float]] = {
     "humidity_past1h": (0, 100),
 
     # Atmospheric pressure in hPa
-    "pressure": (800, 1100),
+    "pressure": (800, 150000),
     "pressure_at_sea": (800, 1100),
 
     # Wind direction in degrees
@@ -256,3 +256,133 @@ def transform_observations(features: list[dict[str, Any]], source_id: int) -> li
         observations[key][parameter_id] = value
 
     return list(observations.values())
+
+def transform_herodot_observations(observations: list[dict[str, Any]], source_id: int) -> list[dict[str, Any]]:
+    """ Validates and transforms Herodot observations into a common data structure. 
+    
+    Observations from the same node and observation time are grouped into one dictionary."""
+
+    # Validate the source ID
+    if (
+        not isinstance(source_id, int)
+        or isinstance(source_id, bool)
+        or source_id <= 0
+    ):
+        raise ValueError("source_id must be a positive integer")
+
+    # Validate that observations is a list
+    if not isinstance(observations, list):
+        raise TypeError("observations must be a list")
+
+    # Define the sensor names accepted from Herodot.
+    sensor_columns = {
+        "temperature": "temperature",
+        "co2_concentration": "co2_concentration",
+        "humidity": "humidity",
+        "pressure": "pressure",
+    }
+
+    # Store measurements grouped by node and timestamp.
+    grouped: dict[tuple[str, str, str], dict[str, Any]] = {}
+
+    for observation in observations:
+        # Validate that the observation is a dictionary
+        if not isinstance(observation, dict):
+            logger.warning("Invalid Herodot observation rejected")
+            continue
+
+        # Extract relevant fields from the observation
+        node_id = observation.get("nodeId")
+        instrument_id = observation.get("instrumentId")
+        instrument_model = observation.get("instrumentModel")
+        timestamp = observation.get("timestamp")
+        sensor = observation.get("sensor")
+        value = observation.get("value")
+
+        # Validate the node ID
+        if not isinstance(node_id, str) or not node_id.strip():
+            logger.warning("Herodot observation rejected: missing node ID")
+            continue
+
+        # Validate the instrument ID
+        if not isinstance(instrument_id, str) or not instrument_id.strip():
+            logger.warning(
+                "Herodot observation rejected: missing instrument ID"
+            )
+            continue
+
+        # Validate the instrument model
+        if not isinstance(instrument_model, str) or not instrument_model.strip():
+            logger.warning(
+                "Herodot observation rejected: missing instrument model"
+            )
+            continue
+
+        # Validate the timestamp
+        if not validate_timestamp(timestamp):
+            logger.warning(
+                "Herodot observation rejected: invalid timestamp"
+            )
+            continue
+
+        # Validate the sensor name
+        if sensor not in sensor_columns:
+            logger.warning("Unknown Herodot sensor rejected: %s", sensor)
+            continue
+
+        # Validate the value to ensure it is a real number and not a boolean
+        if not isinstance(value, Real) or isinstance(value, bool):
+            logger.warning("Invalid Herodot value rejected")
+            continue
+
+        # Check if the value is finite
+        if not isfinite(value):
+            logger.warning("Non-finite Herodot value rejected")
+            continue
+
+        # Define valid ranges for each sensor type
+        limits = {
+            "temperature": (-80, 100),
+            "co2_concentration": (0, 100000),
+            "humidity": (0, 100),
+            "pressure": (300, 150000),
+        }
+
+        minimum, maximum = limits[sensor]
+
+        # Check if the value is within the valid range for the sensor
+        if not minimum <= value <= maximum:
+            logger.warning(
+                "Herodot value outside valid range: sensor=%s",
+                sensor,
+            )
+            continue
+
+        # Round the timestamp to whole seconds so measurements
+        # from the same second can be grouped together.
+        parsed_timestamp = datetime.fromisoformat(
+            timestamp.replace("Z", "+00:00")
+        ).replace(microsecond=0)
+
+        observed = parsed_timestamp.isoformat()
+
+        # Group by node and rounded timestamp.
+        key = (node_id, instrument_id, observed)
+
+        if key not in grouped:
+            grouped[key] = {
+                "node_id": node_id,
+                "source_id": source_id,
+                "instrument_id": instrument_id,
+                "instrument_model": instrument_model,
+                "observed": observed,
+                "temperature": None,
+                "co2_concentration": None,
+                "humidity": None,
+                "pressure": None,
+            }
+
+        column = sensor_columns[sensor]
+        grouped[key][column] = value
+
+    return list(grouped.values())

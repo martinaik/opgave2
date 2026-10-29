@@ -14,7 +14,7 @@ def plot_temperature_vs_humidity(station_id: str = "06108") -> None:
             cur.execute(
                 """
                 SELECT temp_dry, humidity
-                FROM measurement
+                FROM dmi_measurement
                 WHERE temp_dry IS NOT NULL
                   AND humidity IS NOT NULL
                   AND station_id = %s
