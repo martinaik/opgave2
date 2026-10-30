@@ -1,7 +1,7 @@
 # Opgave 2 - Indsamling af miljødata
 
 ## Beskrivelse af projektet
-Formålet med dette projekt er at indsamle, strukturere og analysere miljødata, som kan anvendes til at vurdere kvaliteten af det fysiske arbejdsmiljø. Projektet henter vejrdata fra DMIs offentlige API samt miljømålinger fra Herodot API'et, som måler forhold på kontoret. Dataene behandles gennem separate ETL-pipelines, hvor de hentes, gemmes i et staging area, valideres og transformeres til projektets datastruktur, inden de indlæses i en PostgreSQL-database. Projektet indeholder desuden en lokal REST API, som gør det muligt at tilgå data fra databasen. 
+Formålet med dette projekt er at indsamle, strukturere og analysere miljødata, som kan anvendes til at vurdere kvaliteten af det fysiske arbejdsmiljø. Projektet henter vejrdata fra DMIs offentlige API samt miljømålinger fra Herodot API'et, som måler forholdene på kontoret. Dataene behandles gennem separate ETL-pipelines, hvor de hentes, gemmes i et staging area, valideres og transformeres til projektets datastruktur, inden de indlæses i en PostgreSQL-database. Projektet indeholder desuden en lokal REST API, som gør det muligt at tilgå data fra databasen. 
 
 ## Beskrivelse af, hvordan projektet bygges, køres og testes
 Projektet er udviklet i Python og køres ved hjælp af Docker og Docker Compose. Docker sørger for, at applikationen og PostgreSQL-databasen kan køre i separate containere med de nødvendige afhængigheder.
@@ -16,11 +16,11 @@ POSTGRES_PORT=5432
 PGADMIN_USER_EMAIL=admin@example.com
 PGADMIN_PASSWORD=password
 
-HERODOT_API_TOKEN = indsæt_api_token_her
+HERODOT_API_TOKEN = api_token
 ```
 `POSTGRES_HOST=db` og `POSTGRES_PORT=5432` skal ikke ændres, da de bruges til forbindelsen mellem Docker-containerne. 
 
-Erstat `indsæt_api_token_her` med det gyldige API-token til Herodot (https://herodot.spac.dk/). Tokenet bruges af Herodot ETL-processen til at godkende forespørgsler til API'et. 
+Erstat `api_token` med det gyldige API-token til Herodot (https://herodot.spac.dk/). Tokenet bruges af Herodot ETL-processen til at godkende forespørgsler til API'en. 
 
 De øvrige værdier kan vælges af brugeren. Disse værdier skal bruges, når der oprettes forbindelse til databasen og pgAdmin. `.env`-filen indeholder loginoplysninger og skal derfor ikke pushes til GitHub og er inkluderet i `.gitignore`.
 
@@ -217,7 +217,7 @@ API'en returnerer de matchende målinger i JSON-format. Hvis ingen målinger mat
 Projektet indeholder filer, som visualiserer data fra PostgreSQL-databasen hentet fra DMI's API. Visualiseringerne kan bruges til at undersøge variationer, mulige sammenhænge og forskelle mellem målestationer.
 
 ### Temperatur
-- Temperatur over tid for én station: Viser, hvordan temperaturen ændre sig over tid på en bestemt målestation samt den gennemsnitlige temperatur for stationen.
+- Temperatur over tid for én station: Viser, hvordan temperaturen ændre sig over tid for en bestemt målestation samt den gennemsnitlige temperatur for stationen.
 - Sammenligning af temperatur over tid af flere stationer: Gør det muligt at sammenligne temperaturudviklingen mellem udvalgte målestationer.
 - Gennemsnitlig temperatur på tværs af stationer: Sammenligner stationernes gennemsnitstemperatur og viser forskelle mellem målestationerne.
 - Boxplot af temperaturfordelingen på tværs af stationer: Viser median, spredning og mulige ekstreme temperaturmålinger for hver målestation.
@@ -242,7 +242,7 @@ Projektet indeholder filer, som visualiserer data fra PostgreSQL-databasen hente
 Et visualiseringsscript kan eksempelvis køres med kommandoen `docker compose run --rm app python -m visualizations.temperature_boxplot`. De genererede grafer gemmes i en outputmappe `plots`. 
 
 ### Eksempler på visualiseringer
-Nedenfor vises et udvalg af projektet visualiseringer. De illustrerer, hvordan vejrdata fra PostgreSQL-databasen kan bruges til at undersøge temperaturudviklingen, sammenligne målestationer og analysere sammenhænge mellem vejrparametre. De visualiserede data er indsamlet fra DMI's API i perioden fra den 7. oktober 2026 til den 23. oktober 2026.
+Nedenfor vises et udvalg af projektet visualiseringer. De illustrerer, hvordan vejrdata fra PostgreSQL-databasen kan bruges til at undersøge temperaturudviklingen, sammenligne målestationer og analysere sammenhænge mellem vejrparametre. De øvrige visualiseringer kan genereres ved at køre de tilhørende scripts. De visualiserede data er indsamlet fra DMI's API i perioden fra den 7. oktober 2026 til den 23. oktober 2026.
 
 **Temperatur over tid for stationen 06108**
 <img width="1500" height="750" alt="temperature_plot_1" src="https://github.com/user-attachments/assets/d2a2d1cc-6ff6-4c4d-8cc9-dc7ef4341db2" />
@@ -259,6 +259,11 @@ Grafen sammenligner temperaturudviklingen for målestationerne 06108, 06110 og 0
 
 Grafen viser den gennemsnitlige temperatur på tværs af alle målestationer. Grafen viser, at der er stor forskel i gennemsnitstemperaturen mellem stationerne. Nogle stationer har temperatur helt ned omkring -18 °C, mens andre ligger op omkring 13 °C. Det viser, at temperaturen varierer meget mellem målestationerne.
 
+**Boxplot af temperaturfordelingen på tværs af stationer**
+<img width="1800" height="4830" alt="temperature_boxplot1" src="https://github.com/user-attachments/assets/017afa18-57ec-43cc-8555-e4f2e5b8a3a5" />
+
+Boxplottet viser temperaturfordelingen på tværs af alle målestationer. Nogle stationer har en lille spredning i temperaturmålingerne, mens andre har en større spredning og flere outliers. Det viser, at der er forskelle i temperaturvariation mellem stationerne.
+
 **Temperatur vs. vindhastighed på tværs af stationer**
 <img width="1800" height="3870" alt="temp_wind_correlation_all_stations_1" src="https://github.com/user-attachments/assets/96c9c86e-cf25-4fab-b074-a87402f9f14a" />
 
@@ -271,35 +276,30 @@ Antallet af målinger varierer mellem stationerne, og nogle stationer har kun f�
 
 Heatmappet viser korrelationer mellem vejrparametrene: lufttemperatur, dugpunktstemperatur, luftfugtighed, lufttryk, vindhastighed, nedbør de seneste 10 minutter, sigtbarhed, skydække og globalstråling. Pearsons korrelationskoefficient er anvendt til at måle den lineære sammenhæng mellem parametrene. Farverne viser, om der er en positiv eller negativ sammenhæng mellem parametrene, og hvor stærk sammenhængen er. For eksempel er der en positiv korrelation mellem lufttemperatur og dugpunktstemperatur, hvilket betyder, at de to parametre har tendens til at stige sammen. Der er derimod en negativ korrelation mellem skydække og globalstråling, hvilket viser en tendens til, at højere globalstråling hænger sammen med mindre skydække. 
 
-**Boxplot af temperaturfordelingen på tværs af stationer**
-<img width="1800" height="4830" alt="temperature_boxplot1" src="https://github.com/user-attachments/assets/017afa18-57ec-43cc-8555-e4f2e5b8a3a5" />
-
-Boxplottet viser temperaturfordelingen på tværs af alle målestationer. Nogle stationer har en lille spredning i temperaturmålingerne, mens andre har en større spredning og flere outliers. Det viser, at der er forskelle i temperaturvariation mellem stationerne.
-
-## Visualiseringer af DMI vs. Herodot
+## Visualiseringer af DMI vs. Herodot data
 Projektet indeholder også visualiseringer, der sammenligner vejrdata hentet fra DMI's API med indendørs miljødata hentet fra Herodot API'en. Visualiseringerne kan bruges til at undersøge forskelle og mulige sammenhænge mellem udendørs- og indendørsforhold, herunder temperatur og luftfugtighed. 
 
 For at gøre sammenligningen mere relevant er DMI-dataene filtreret, så kun målestationer i Danmark indgår, da Herodot-målingerne er foretaget i Danmark. DMI-målingerne repræsenterer dog udendørsforhold på tværs af danske målestationer og ikke forholdene lige uden for Herodot-sensorerne. 
 
-Følgende visualiseringerne illustrerer, hvordan dataen fra PostgreSQL-databasen kan bruges til at sammenligne udendørs- og indendørsforhold. De visualiserede data er indsamlet fra DMI's API og Herodot API'en i perioden fra den 28. oktober 2026 til den 29. oktober 2026.
+Følgende visualiseringerne illustrerer, hvordan dataen fra PostgreSQL-databasen kan bruges til at sammenligne udendørs- og indendørsforhold. De visualiserede data er indsamlet fra DMI's API og Herodot API'en i perioden fra den 28. oktober 2026 til den 30. oktober 2026.
 
 **Temperatur - DMI vs. Herodot**
-<img width="1800" height="900" alt="temperature_dmi_vs_herodot1" src="https://github.com/user-attachments/assets/8fa274d1-e750-4f86-b2d3-eae478cd35fc" />
+<img width="1800" height="900" alt="temperature_dmi_vs_herodot8" src="https://github.com/user-attachments/assets/900fde7e-8397-47be-a3d1-eacffe2db42d" />
 
 Grafen viser temperaturudviklingen over tid for DMI og Herodot. Grafen viser, at temperaturen indendørs er højere end temperaturen udendørs. Samtidig ses der en tendens til, at temperaturændringerne udendørs afspejles i temperaturen indendørs. Når udendørstemperaturen stiger eller falder, er der en lignende udvikling i indendørstemperaturen. Dette viser, at udendørstemperaturen har betydning for temperaturudviklingen indendørs. 
 
 **Luftfugtighed - DMI vs. Herodot**
-<img width="1800" height="900" alt="humidity_dmi_vs_herodot1" src="https://github.com/user-attachments/assets/254ccad3-03a0-4660-812d-6693a3631c81" />
+<img width="1800" height="900" alt="humidity_dmi_vs_herodot4" src="https://github.com/user-attachments/assets/e5ec623c-dae5-404c-acc9-abd755c5fb9d" />
 
 Grafen viser luftfugtigheden over tid for DMI vs. Herodot. Grafen viser, at luftfugtigheden udendørs er højere end indendørs. Der kan ses en tendens til, at luftfugtigheden udendørs og indendørs følger et lignende mønster over tid. Når luftfugtigheden udendørs stiger eller falder, ses der en tilsvarende udvikling indendørs. Dette viser, at luftfugtigheden udendørs har betydning for udviklingen af luftfugtigheden indendørs.
 
 **Boxplot - temperaturfordeling**
-<img width="1350" height="900" alt="temperature_boxplot_dmi_vs_herodot1" src="https://github.com/user-attachments/assets/8d2b3d8e-ed30-4d88-a98e-40a3c43fc574" />
+<img width="1350" height="900" alt="temperature_boxplot_dmi_vs_herodot4" src="https://github.com/user-attachments/assets/1956896a-d80f-4cd1-a03f-629879b75cb7" />
 
 Boxplottet sammenligner temperaturfordelingen for DMI og Herodot. Plottet viser, at temperaturen er højere indenfor end udendørs. Samtidig har indendørstemperaturen en større spredning og flere outliers. Dette indikerer, at temperaturen varierer mere indendørs.
 
 **Korrelationsheatmap**
-<img width="1500" height="1200" alt="correlation_heatmap_dmi_vs_herodot1" src="https://github.com/user-attachments/assets/74574b49-70d4-41cc-b04e-947b0b3ad61b" />
+<img width="1500" height="1200" alt="correlation_heatmap_dmi_vs_herodot5" src="https://github.com/user-attachments/assets/8a931f10-7665-4fed-b979-779395192068" />
 
 Heatmappet viser Pearson-korrelationerne mellem temperatur og luftfugtighed fra DMI og Herodot. Farverne og korrelationsværdierne viser, om der er en positiv eller negativ sammenhæng mellem parametrene, og hvor stærk sammenhængen er. For eksempel er der en positiv korrelation mellem DMI-temperaturen og Herodot-temperaturen, hvilket indikerer en positiv lineær sammenhæng. Det betyder, at en højere udendørstemperatur fører til en stigning i indendørstemperaturen. Der er derimod en negativ korrelation mellem Herodot-temperaturen og Herodot-luftfugtigheden. Det indikerer, at højere indendørstemperaturer fører til lavere indendørs luftfugtighed.
 
