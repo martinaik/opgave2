@@ -83,7 +83,6 @@ def plot_temp_humidity_correlation_all_stations() -> None:
         )
 
     print("=" * 65)
-    print(f"Stations with calculated correlations: {len(correlations)}")
 
     # Check if there are any stations with enough varying data to calculate correlation
     if not correlations:

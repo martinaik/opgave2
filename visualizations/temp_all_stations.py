@@ -59,8 +59,7 @@ def compare_all_stations() -> None:
             f"{float(maximum):>14.2f}"
         )
 
-    print("-" * 75)
-    print(f"Total stations: {len(rows)}")
+    print("=" * 75)
 
     # Plot the average temperatures for all stations
     plt.figure(figsize=(12, max(8, len(rows) * 0.22)))

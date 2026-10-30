@@ -63,8 +63,6 @@ def plot_humidity_all_stations() -> None:
         )
 
     print("=" * 75)
-    print(f"Number of stations: {len(stations)}")
-    print(f"Total measurements: {len(rows)}")
 
     # Print the average humidity for each station
     station_averages = {
