@@ -284,22 +284,22 @@ For at gøre sammenligningen mere relevant er DMI-dataene filtreret, så kun må
 Følgende visualiseringerne illustrerer, hvordan dataen fra PostgreSQL-databasen kan bruges til at sammenligne udendørs- og indendørsforhold. De visualiserede data er indsamlet fra DMI's API og Herodot API'en i perioden fra den 28. oktober 2026 til den 30. oktober 2026.
 
 **Temperatur - DMI vs. Herodot**
-<img width="1800" height="900" alt="temperature_dmi_vs_herodot8" src="https://github.com/user-attachments/assets/900fde7e-8397-47be-a3d1-eacffe2db42d" />
+<img width="1800" height="900" alt="temperature_dmi_vs_herodot10" src="https://github.com/user-attachments/assets/3bb9fd84-a9f7-4247-8295-d200ab7cce16" />
 
 Grafen viser temperaturudviklingen over tid for DMI og Herodot. Grafen viser, at temperaturen indendørs er højere end temperaturen udendørs. Samtidig ses der en tendens til, at temperaturændringerne udendørs afspejles i temperaturen indendørs. Når udendørstemperaturen stiger eller falder, er der en lignende udvikling i indendørstemperaturen. Dette viser, at udendørstemperaturen har betydning for temperaturudviklingen indendørs. 
 
 **Luftfugtighed - DMI vs. Herodot**
-<img width="1800" height="900" alt="humidity_dmi_vs_herodot4" src="https://github.com/user-attachments/assets/e5ec623c-dae5-404c-acc9-abd755c5fb9d" />
+<img width="1800" height="900" alt="humidity_dmi_vs_herodot6" src="https://github.com/user-attachments/assets/eb528e08-c970-40b8-90af-23f494a60abc" />
 
 Grafen viser luftfugtigheden over tid for DMI vs. Herodot. Grafen viser, at luftfugtigheden udendørs er højere end indendørs. Der kan ses en tendens til, at luftfugtigheden udendørs og indendørs følger et lignende mønster over tid. Når luftfugtigheden udendørs stiger eller falder, ses der en tilsvarende udvikling indendørs. Dette viser, at luftfugtigheden udendørs har betydning for udviklingen af luftfugtigheden indendørs.
 
 **Boxplot - temperaturfordeling**
-<img width="1350" height="900" alt="temperature_boxplot_dmi_vs_herodot4" src="https://github.com/user-attachments/assets/1956896a-d80f-4cd1-a03f-629879b75cb7" />
+<img width="1350" height="900" alt="temperature_boxplot_dmi_vs_herodot6" src="https://github.com/user-attachments/assets/b5610fb9-3b2f-4431-95d8-78e6032a4bd1" />
 
 Boxplottet sammenligner temperaturfordelingen for DMI og Herodot. Plottet viser, at temperaturen er højere indenfor end udendørs. Samtidig har indendørstemperaturen en større spredning og flere outliers. Dette indikerer, at temperaturen varierer mere indendørs.
 
 **Korrelationsheatmap**
-<img width="1500" height="1200" alt="correlation_heatmap_dmi_vs_herodot5" src="https://github.com/user-attachments/assets/8a931f10-7665-4fed-b979-779395192068" />
+<img width="1500" height="1200" alt="correlation_heatmap_dmi_vs_herodot7" src="https://github.com/user-attachments/assets/66911675-2fd7-4ae7-8759-7872b311188d" />
 
 Heatmappet viser Pearson-korrelationerne mellem temperatur og luftfugtighed fra DMI og Herodot. Farverne og korrelationsværdierne viser, om der er en positiv eller negativ sammenhæng mellem parametrene, og hvor stærk sammenhængen er. For eksempel er der en positiv korrelation mellem DMI-temperaturen og Herodot-temperaturen, hvilket indikerer en positiv lineær sammenhæng. Det betyder, at en højere udendørstemperatur fører til en stigning i indendørstemperaturen. Der er derimod en negativ korrelation mellem Herodot-temperaturen og Herodot-luftfugtigheden. Det indikerer, at højere indendørstemperaturer fører til lavere indendørs luftfugtighed.
 
