@@ -36,7 +36,6 @@ def plot_temperature_vs_humidity(station_id: str = "06108") -> None:
     temperatures = [float(row[0]) for row in rows]
     humidity_values = [float(row[1]) for row in rows]
 
-    
     # Calculate Pearson correlation coefficient and p-value
     if len(rows) < 2:
         print("Not enough measurements to calculate correlation.")
