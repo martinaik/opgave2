@@ -2,6 +2,7 @@
 import os
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
 from app.database import get_connection
 from visualizations.get_danish_stations import get_danish_station_ids
 
@@ -93,13 +94,14 @@ def visualize_temperature_comparison():
     ).sort_index()
 
     # Plot temperatures
-    combined.plot(figsize=(12, 6))
+    ax = combined.plot(figsize=(12, 6))
     plt.xlabel("Time")
     plt.ylabel("Temperature (°C)")
     plt.title("Outdoor temperature vs. indoor temperature")
     plt.legend()
     plt.grid(True)
     plt.xticks(rotation=45)
+    ax.xaxis.set_major_formatter(mdates.DateFormatter("%d-%m %H:%M"))
     plt.tight_layout()
 
     # Ensure the output directory exists

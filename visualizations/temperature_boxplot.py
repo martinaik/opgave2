@@ -61,7 +61,7 @@ def create_temperature_boxplot() -> None:
 
     ax.set_title("Temperature Variation Across DMI Stations", pad=15)
     ax.set_xlabel("Temperature (°C)")
-    ax.set_ylabel("Weather station")
+    ax.set_ylabel("Station ID")
     ax.grid(axis="x", linestyle="--", alpha=0.5)
     ax.set_axisbelow(True)
     fig.tight_layout()
